@@ -43,38 +43,65 @@ const TabNavigator = () => {
   const user = useSelector((state) => state.user.value); //Recuperation paramètres de l'utilsateur stocké dans le STORE
   
   return (
-    <Tab.Navigator screenOptions={({ route }) => ({
-      tabBarIcon: ({ color, size }) => {
-        let iconName = '';
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName = "";
 
-        if (route.name === 'Map') {
-          iconName = 'home';
-          return <FontAwesome name={iconName} size={size} color={color} />;
-        } else if (route.name === 'Compte') {
-          iconName = 'user';
-          return <FontAwesome name={iconName} size={size} color={color} />;
-        } else if (route.name === 'Chat') {
-          iconName = 'comment';
-          return (
-            <View style={{ flexDirection:"row" }}>
-              <FontAwesome name={iconName} size={size} color={color} />
-              {(user.pastilleMessage)&&<View style={{ width: 10, height: 10, backgroundColor: '#F00', borderRadius: 50}}></View>}
-            </View>
-          );
-        }
-      },
-      tabBarActiveTintColor: '#FFFFFF',
-      tabBarInactiveTintColor: '#000000',
-      tabBarStyle: { backgroundColor: '#7DBA84' },
-      headerShown: false,
-    })}>
+          if (route.name === "Map") {
+            iconName = "home";
+            return <FontAwesome name={iconName} size={size} color={color} />;
+          } else if (route.name === "Compte") {
+            iconName = "user";
+            return <FontAwesome name={iconName} size={size} color={color} />;
+          } else if (route.name === "Chat") {
+            iconName = "comment";
+            return (
+              <View style={{ flexDirection: "row" }}>
+                <FontAwesome name={iconName} size={size} color={color} />
+                {user.pastilleMessage && (
+                  <View
+                    style={{
+                      width: 10,
+                      height: 10,
+                      backgroundColor: "#F00",
+                      borderRadius: 50,
+                    }}
+                  ></View>
+                )}
+              </View>
+            );
+          }
+        },
+        tabBarActiveTintColor: "#7DBA84",
+        tabBarInactiveTintColor: "#000000",
+        tabBarStyle: { backgroundColor: "#FFF" },
+        headerShown: false,
+      })}
+    >
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Map" component={MapScreen} />
       <Tab.Screen name="Compte" component={MonCompteScreen} />
-      <Tab.Screen name="Profil" component={ProfileScreen} options={{ tabBarButton: (props) => { } }} />
-      <Tab.Screen name="Preference" component={PreferenceScreen} options={{ tabBarButton: (props) => { } }} />
-      <Tab.Screen name="Compagnon" component={CompagnonScreen} options={{ tabBarButton: (props) => { } }} />
-      <Tab.Screen name="Poi" component={PoiScreen} options={{ tabBarButton: (props) => { } }} />
+      <Tab.Screen
+        name="Profil"
+        component={ProfileScreen}
+        options={{ tabBarButton: (props) => {} }}
+      />
+      <Tab.Screen
+        name="Preference"
+        component={PreferenceScreen}
+        options={{ tabBarButton: (props) => {} }}
+      />
+      <Tab.Screen
+        name="Compagnon"
+        component={CompagnonScreen}
+        options={{ tabBarButton: (props) => {} }}
+      />
+      <Tab.Screen
+        name="Poi"
+        component={PoiScreen}
+        options={{ tabBarButton: (props) => {} }}
+      />
     </Tab.Navigator>
   );
 }

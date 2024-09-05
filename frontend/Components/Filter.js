@@ -128,7 +128,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'parc')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'parc')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('parc')}
           />
           <Text style={styles.text}>Parcs et forêts</Text>
@@ -138,7 +138,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'air')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'air')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('air')}
           />
           <Text style={styles.text}>Air canine</Text>
@@ -148,7 +148,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'veterinaire')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'veterinaire')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('veterinaire')}
           />
           <Text style={styles.text}>Veterinaire</Text>
@@ -158,7 +158,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'animalerie')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'animalerie')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('animalerie')}
           />
           <Text style={styles.text}>Animalerie</Text>
@@ -168,7 +168,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'eau')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'eau')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('eau')}
           />
           <Text style={styles.text}>Point d'eau</Text>
@@ -177,7 +177,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'restaurant')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'restaurant')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('restaurant')}
           />
           <Text style={styles.text}>Bar/Restaurant</Text>
@@ -186,7 +186,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'favori')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'favori')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('favori')}
           />
           <Text style={styles.text}>Favoris</Text>
@@ -195,7 +195,7 @@ export default function Filter({ userInfo, validFilters }) {
         <View style={styles.row}>
           <FontAwesome name='paw'
             size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'autre')) ? '#D9D9D9' : '#416165' }}
+            style={{ marginRight: 15, color: (filters.some(e => e === 'autre')) ? '#D9D9D9' : '#000' }}
             onPress={() => selectFilter('autre')}
           />
           <Text style={styles.text}>Autres</Text>
@@ -211,10 +211,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     padding: 15,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'space-evenly',
     alignItems: 'center',
     width: '90%',
-    borderRadius: 20,
+    borderRadius: 8,
+    height: '80%',
   },
 
   containerfilters: {
@@ -235,32 +235,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    marginBottom: 10,
   },
 
   title: {
-    fontFamily: "Poppins_600Regular",
+    fontFamily: "Poppins_600SemiBold",
     fontSize: 20,
-    color: '#416165',
+    color: '#000',
     padding: 10,
   },
 
   text: {
     fontFamily: "Poppins_600Regular",
     fontSize: 20,
-    color: '#416165'
+    color: '#000'
   },
 
   button: {
-    backgroundColor: '#BB7E5D',
-    padding: 11,
+    backgroundColor: '#FFFFFF',
+    padding: 10,
     width: '50%',
-    borderRadius: 8,
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
   },
 
   buttontext: {
-    color: "white",
+    color: "#000",
     fontFamily: "Poppins_600SemiBold",
     fontSize: 16,
   },
