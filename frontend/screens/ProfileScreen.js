@@ -26,11 +26,11 @@ export default function ProfilScreen({ navigation }) {
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const [email, setEmail] = useState(user.email || "reno@reno.fr");
+  const [email, setEmail] = useState(user.email || "");
   const [pseudo, setPseudo] = useState(user.pseudo || "");
   const [city, setCity] = useState(user.city || "");
   const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("reno");
+  const [newPassword, setNewPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleClickCloseScreen = () => {

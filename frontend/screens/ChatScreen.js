@@ -61,7 +61,7 @@ export default function ChatScreen({ navigation }) {
       .then((data) => {
         if (data.result) {
           const pseudoFilter = data.pseudos.filter(e => {
-            return ((e !== user.pseudo) && (!contacts.some((contact) => { return (e === contact.pseudo) })))
+            return ((e !== user.pseudo) && (!contacts.some((contact) => { return (e === contact.pseudo) }))) //Filtre les pseudos déjà en contact
           })
           const suggestions = pseudoFilter.map((data, i) => {
             return { id: (i + 1), title: data };
