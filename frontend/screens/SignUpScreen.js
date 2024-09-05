@@ -9,7 +9,7 @@ import {
   ScrollView,
   Platform,
   Dimensions
-} from "react-native";
+} from "react-native"; 
 import {
   useFonts,
   Commissioner_400Regular,
@@ -72,7 +72,6 @@ export default function SignUpScreen({ navigation }) {
     fetch(`https://api-adresse.data.gouv.fr/search/?q=${query}&type=municipality&autocomplete=0`)
       .then((response) => response.json())
       .then(data => {
-        /* console.log(data) */
         try {
           if (data.features) {
             const suggestions = data.features.map((data, i) => {
