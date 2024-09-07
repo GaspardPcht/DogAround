@@ -1,28 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"; // Importation de la fonction createSlice de Redux Toolkit
 
+// Définition de l'état initial
 const initialState = {
   value: {
-    token: "",
-    email: "",
-    avatar: "",
-    pseudo: "",
-    city: "",
+    token: "", // Jeton d'authentification de l'utilisateur
+    email: "", // Email de l'utilisateur
+    avatar: "", // Avatar de l'utilisateur
+    pseudo: "", // Pseudo de l'utilisateur
+    city: "", // Ville de l'utilisateur
     cityfield: {
-      cityname: "",
-      latitude: 0.1,
-      longitude: 0.1,
+      cityname: "", // Nom de la ville
+      latitude: 0.1, // Latitude de la ville
+      longitude: 0.1, // Longitude de la ville
     },
-    radius: 20000,
-    filtres: [],
-    favorites: [],
-    pastilleMessage:false,
+    radius: 20000, // Rayon de recherche
+    filtres: [], // Filtres appliqués
+    favorites: [], // Favoris de l'utilisateur
+    pastilleMessage: false, // Indicateur de message
   },
 };
 
+// Création du slice utilisateur avec Redux Toolkit
 export const userSlice = createSlice({
-  name: "user",
-  initialState,
+  name: "user", // Nom du slice
+  initialState, // État initial
   reducers: {
+    // Définition des reducers
     login: (state, action) => {
       state.value.token = action.payload.token;
       state.value.email = action.payload.email;
@@ -48,14 +51,16 @@ export const userSlice = createSlice({
       state.value.token = null;
       state.value.email = null;
       state.value.pseudo = null;
-      state.value.avatar = null; 
+      state.value.avatar = null;
     },
     addFavorite: (state, action) => {
-      state.value.favorites.push(action.payload)
-      console.log('favorites:', state.value.favorites)
+      state.value.favorites.push(action.payload);
+      console.log("favorites:", state.value.favorites);
     },
     removeFavorite: (state, action) => {
-      state.value.favorites = state.value.favorites.filter(x=> x !== action.payload)
+      state.value.favorites = state.value.favorites.filter(
+        (x) => x !== action.payload
+      );
     },
     setPastilleMessage: (state, action) => {
       state.value.pastilleMessage = action.payload;
@@ -63,6 +68,7 @@ export const userSlice = createSlice({
   },
 });
 
+// Exportation des actions et du reducer
 export const {
   login,
   addToken,
