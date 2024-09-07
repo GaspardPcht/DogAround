@@ -1,14 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
+// Définition du schéma pour les événements
 const eventsSchema = mongoose.Schema({
-  created_by : id_,
-  created_at : Date,
-  title : String,
-  description : String,
-  dates : [Date],
-  comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'comments'}],
+  created_by: id_, // ID de l'utilisateur qui a créé l'événement (à corriger, devrait être { type: mongoose.Schema.Types.ObjectId, ref: 'users' })
+  created_at: Date, // Date de création de l'événement
+  title: String, // Titre de l'événement
+  description: String, // Description de l'événement
+  dates: [Date], // Liste des dates de l'événement
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "comments" }], // Liste des commentaires associés à l'événement
 });
 
-const Event = mongoose.model('events', eventsSchema);
+// Création du modèle Event basé sur le schéma défini
+const Event = mongoose.model("events", eventsSchema);
 
-module.exports = Event ;
+// Exportation du modèle Event pour l'utiliser dans d'autres parties de l'application
+module.exports = Event;
