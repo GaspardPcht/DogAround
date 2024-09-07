@@ -1,47 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 
-import MapScreen from './screens/MapScreen';
-import SignInScreen from './screens/SignInScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import MonCompteScreen from './screens/MonCompteScreen';
-import ChatScreen from './screens/ChatScreen';
-import PreferenceScreen from './screens/PreferenceScreen'
-import CompagnonScreen from './screens/CompagnonScreen';
-import PoiScreen from './screens/PoiScreen'
+import MapScreen from "./screens/MapScreen";
+import SignInScreen from "./screens/SignInScreen";
+import SignUpScreen from "./screens/SignUpScreen";
+import MonCompteScreen from "./screens/MonCompteScreen";
+import ChatScreen from "./screens/ChatScreen";
+import PreferenceScreen from "./screens/PreferenceScreen";
+import CompagnonScreen from "./screens/CompagnonScreen";
+import PoiScreen from "./screens/PoiScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import MessageScreen from "./screens/MessageScreen";
-import EventScreen from './screens/EventScreen';
-import NewEventScreen from './screens/NewEventScreen'
+import EventScreen from "./screens/EventScreen";
+import NewEventScreen from "./screens/NewEventScreen";
 
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import user from './reducers/user';
-import places from './reducers/places';
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import user from "./reducers/user";
+import places from "./reducers/places";
 import event from "./reducers/event";
 
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
-
+// Configuration du store Redux
 const store = configureStore({
-  reducer: { user, places, event},
+  reducer: { user, places, event },
 });
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-//Configuration tab navigation
+// Configuration de la navigation par onglets
 const TabNavigator = () => {
-  const user = useSelector((state) => state.user.value); //Recuperation paramètres de l'utilsateur stocké dans le STORE
-  
+  const user = useSelector((state) => state.user.value); // Récupération des paramètres de l'utilisateur stockés dans le store
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -85,26 +85,26 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Profil"
         component={ProfileScreen}
-        options={{ tabBarButton: (props) => {} }}
+        options={{ tabBarButton: (props) => null }}
       />
       <Tab.Screen
         name="Preference"
         component={PreferenceScreen}
-        options={{ tabBarButton: (props) => {} }}
+        options={{ tabBarButton: (props) => null }}
       />
       <Tab.Screen
         name="Compagnon"
         component={CompagnonScreen}
-        options={{ tabBarButton: (props) => {} }}
+        options={{ tabBarButton: (props) => null }}
       />
       <Tab.Screen
         name="Poi"
         component={PoiScreen}
-        options={{ tabBarButton: (props) => {} }}
+        options={{ tabBarButton: (props) => null }}
       />
     </Tab.Navigator>
   );
-}
+};
 
 export default function App() {
   return (
