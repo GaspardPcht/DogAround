@@ -23,21 +23,24 @@ export default function NewEventScreen({ navigation, route }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const dispatch = useDispatch();
 
+  // Fonction pour fermer l'écran actuel et revenir à l'écran précédent
   const handleClickCloseScreen = () => {
     navigation.goBack();
   };
 
+  // Fonction pour créer un nouvel événement et revenir à l'écran précédent
   const handleClickToCreate = () => {
+    // Envoie une action pour ajouter un événement avec les détails fournis
     dispatch(addEvent({ nom: name, date, horaires, description }));
-    navigation.goBack();
+    navigation.goBack(); // Retourne à l'écran précédent après la création de l'événement
   };
 
-  //Function pour ouvrir la modal date
+  // Fonction pour gérer le changement de date dans la modal de sélection de date
   const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(false);
-    setSelectedDate(currentDate);
-    setDate(currentDate.toLocaleDateString()); 
+    const currentDate = selectedDate || date; // Utilise la date sélectionnée ou la date actuelle
+    setShowDatePicker(false); // Ferme le sélecteur de date
+    setSelectedDate(currentDate); // Met à jour l'état avec la date sélectionnée
+    setDate(currentDate.toLocaleDateString()); // Met à jour l'état avec la date formatée
   };
 
   return (

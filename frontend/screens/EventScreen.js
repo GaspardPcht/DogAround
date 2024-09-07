@@ -4,9 +4,13 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 
 export default function EventScreen({ navigation, route }) {
+  // Récupération des paramètres de la route
   const { image, nom } = route.params;
+
+  // Sélection de l'état de l'événement dans le store Redux
   const event = useSelector((store) => store.event.value);
 
+  // Fonction pour fermer l'écran et revenir à l'écran précédent
   const handleClickCloseScreen = () => {
     navigation.goBack();
   };

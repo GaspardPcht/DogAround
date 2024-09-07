@@ -9,15 +9,18 @@ import { logout } from "../reducers/user";
 import TextContainer from "../Components/TextContainer";
 
 export default function PreferenceScreen({ navigation }) {
+  // Utilise useDispatch pour obtenir la fonction dispatch de Redux
   const dispatch = useDispatch();
 
+  // Fonction pour naviguer vers l'écran "Compte"
   const handleClickCloseScreen = () => {
     navigation.navigate("Compte");
   };
 
+  // Fonction pour gérer la déconnexion de l'utilisateur
   const handleClickDeconnexion = () => {
-    dispatch(logout());
-    navigation.navigate("SignIn");
+    dispatch(logout()); // Déclenche l'action de déconnexion en utilisant Redux
+    navigation.navigate("SignIn"); // Navigue vers l'écran de connexion
   };
 
   return (

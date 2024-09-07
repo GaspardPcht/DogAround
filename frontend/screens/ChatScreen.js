@@ -30,206 +30,246 @@ export default function ChatScreen({ navigation }) {
   /* const [searchQuery, setSearchQuery] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); */
   const [contacts, setContacts] = useState([]);
-
+  // Sélection de l'utilisateur dans le store Redux
   const user = useSelector((state) => state.user.value);
+
+  // Hook pour vérifier si l'écran est actuellement focalisé
   const isFocused = useIsFocused();
 
   /* console.log(contacts) */
 
-  //Raz recherche d'un contact
+  // Fonction pour réinitialiser la recherche de contacts
   const onClearPress = () => {
     setSearchContacts([]);
-  }
+  };
 
-  //Fonction recherche d'un contact
+  // Fonction pour rechercher un contact
   const searchContact = (query) => {
-    // Prevent search with an empty query
-    if (query === '') {
+    // Empêche la recherche avec une requête vide
+    if (query === "") {
       return;
     }
 
     fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/${user.token}/pseudos?search=${query}`,
       {
-        method: "GET",
+        method: "GET", // Méthode HTTP utilisée pour la requête
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", // En-tête pour indiquer le type de contenu
         },
       }
     )
-      .then((response) => response.json())
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         if (data.result) {
-          const pseudoFilter = data.pseudos.filter(e => {
-            return ((e !== user.pseudo) && (!contacts.some((contact) => { return (e === contact.pseudo) }))) //Filtre les pseudos déjà en contact
-          })
-          const suggestions = pseudoFilter.map((data, i) => {
-            return { id: (i + 1), title: data };
+          // Filtre les pseudos déjà en contact et ceux de l'utilisateur
+          const pseudoFilter = data.pseudos.filter((e) => {
+            return (
+              e !== user.pseudo &&
+              !contacts.some((contact) => {
+                return e === contact.pseudo;
+              })
+            );
           });
-          setSearchContacts(suggestions);
 
+          // Crée des suggestions de contacts
+          const suggestions = pseudoFilter.map((data, i) => {
+            return { id: i + 1, title: data };
+          });
+
+          setSearchContacts(suggestions); // Met à jour les contacts suggérés
         } else {
-          setSearchContacts([]);
+          setSearchContacts([]); // Réinitialise les contacts suggérés en cas d'erreur
         }
       });
   };
 
-  //Fonction récupération liste des contacts
+  // Fonction pour récupérer la liste des contacts
   const contactMessage = () => {
     fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/contacts/${user.token}`,
       {
-        method: "GET",
+        method: "GET", // Méthode HTTP utilisée pour la requête
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", // En-tête pour indiquer le type de contenu
         },
       }
     )
-      .then((response) => response.json())
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         if (data.result) {
           /* console.log(data.contacts) */
+          // Met à jour les contacts en inversant l'ordre
           setContacts(
-            data.contacts.map((contact) => ({
-              pseudo: contact.pseudo,
-              avatar: contact.avatar,
-              invitation: contact.invitation,
-              discussion: contact.discussion,
-            })).reverse()
+            data.contacts
+              .map((contact) => ({
+                pseudo: contact.pseudo, // Pseudo du contact
+                avatar: contact.avatar, // Avatar du contact
+                invitation: contact.invitation, // Statut de l'invitation
+                discussion: contact.discussion, // Discussion associée
+              }))
+              .reverse() // Inverse l'ordre des contacts
           );
         } else {
-          setContacts([]);
+          setContacts([]); // Réinitialise les contacts en cas d'erreur
         }
       });
   };
 
-  //Fonction Fermeture Modal invitation
+  // Fonction pour fermer la modal d'invitation
   const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setSearchContacts([]);
+    setIsModalVisible(false); // Cache la modal
+    setSearchContacts([]); // Réinitialise les contacts recherchés
   };
 
-  //Fonction ouverture Modal invitation
+  // Fonction pour ouvrir la modal d'invitation
   const handleOpenInvitation = (contact) => {
-    setSelectedContact(contact);
-    setSearchContacts([]);
-    setIsModalVisible(true);
+    setSelectedContact(contact); // Définit le contact sélectionné
+    setSearchContacts([]); // Réinitialise les contacts recherchés
+    setIsModalVisible(true); // Affiche la modal
   };
 
-  //Fonction Fermeture Modal réponse invitationn
+  // Fonction pour fermer la modal de réponse à une invitation
   const handleCloseModalAnswer = () => {
-    setIsModalAnswerVisible(false);
+    setIsModalAnswerVisible(false); // Cache la modal de réponse
   };
 
-  //Fonction ouverture Modal réponse invitation
+  // Fonction pour ouvrir la modal de réponse à une invitation
   const handleOpenInvitationAnswer = (contact) => {
-    setSelectedContact(contact);
-    setIsModalAnswerVisible(true);
+    setSelectedContact(contact); // Définit le contact sélectionné
+    setIsModalAnswerVisible(true); // Affiche la modal de réponse
   };
 
-  //Fonction envoi invitation
+  // Fonction pour envoyer une invitation
   const handleClickForInvitation = () => {
     fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/invitation/${user.token}`,
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pseudo: selectedContact }),
+        method: "POST", // Méthode HTTP utilisée pour la requête
+        headers: { "Content-Type": "application/json" }, // En-tête pour indiquer le type de contenu
+        body: JSON.stringify({ pseudo: selectedContact }), // Corps de la requête avec le pseudo du contact sélectionné
       }
     )
-      .then((response) => response.json())
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         if (data.result) {
-          setIsModalVisible(false);
+          setIsModalVisible(false); // Cache la modal
           /* setSearchQuery(""); */
-          setSearchContacts([]);
-          contactMessage();
+          setSearchContacts([]); // Réinitialise les contacts recherchés
+          contactMessage(); // Met à jour la liste des contacts
         }
       });
   };
 
-  //Fonction réponse invitation
+  // Fonction pour répondre à une invitation
   const handleClickForInvitationAnswer = (answer) => {
     fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/invitation/${user.token}`,
       {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pseudo: selectedContact, answer: answer }),
+        method: "PUT", // Méthode HTTP utilisée pour la requête
+        headers: { "Content-Type": "application/json" }, // En-tête pour indiquer le type de contenu
+        body: JSON.stringify({ pseudo: selectedContact, answer: answer }), // Corps de la requête avec le pseudo du contact sélectionné et la réponse
       }
     )
-      .then((response) => response.json())
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         if (data.result) {
-          setIsModalAnswerVisible(false);
-          contactMessage();
+          setIsModalAnswerVisible(false); // Cache la modal de réponse
+          contactMessage(); // Met à jour la liste des contacts
         }
       });
   };
 
-  //Fonction ouverture MessageScreen avec props
+  // Fonction pour ouvrir l'écran de message avec des props
   const handleClickOpenMessage = (contact) => {
-    setIsModalVisible(false);
-    setIsModalAnswerVisible(false);
-    if (contact.invitation === 'accepted') {
-      navigation.navigate("Message", { discussion_pseudo: contact.pseudo, discussion_id: contact.discussion._id });
-    }
-    else if (contact.invitation === 'received') {
+    setIsModalVisible(false); // Cache la modal
+    setIsModalAnswerVisible(false); // Cache la modal de réponse
+    if (contact.invitation === "accepted") {
+      // Si l'invitation est acceptée, navigue vers l'écran de message avec les props
+      navigation.navigate("Message", {
+        discussion_pseudo: contact.pseudo,
+        discussion_id: contact.discussion._id,
+      });
+    } else if (contact.invitation === "received") {
+      // Si l'invitation est reçue, ouvre la modal de réponse à l'invitation
       handleOpenInvitationAnswer(contact.pseudo);
     }
   };
 
-  //Affichage nouveau message
+  // Fonction pour afficher un nouveau message
   const showNewMessage = (contact) => {
     try {
-      if ((contact.invitation === "accepted")
-        && (contact.discussion.newMessage.pseudo !== null)
-        && (contact.discussion.newMessage.pseudo !== user.pseudo)) {
-        return (<Text style={[styles.invitationText, { color: "#0000CC" }]}>Nouveau message</Text>)
+      if (
+        contact.invitation === "accepted" &&
+        contact.discussion.newMessage.pseudo !== null &&
+        contact.discussion.newMessage.pseudo !== user.pseudo
+      ) {
+        return (
+          <Text style={[styles.invitationText, { color: "#0000CC" }]}>
+            Nouveau message
+          </Text>
+        );
       }
+    } catch (error) {
+      console.error(error); // Affiche l'erreur dans la console
     }
-    catch {
-    }
-  }
+  };
 
+  // Utilisation de useEffect pour appeler contactMessage lorsque l'écran est focalisé
   useEffect(() => {
     if (isFocused) {
       contactMessage();
     }
   }, [isFocused]);
 
-  //Rendu de la liste de contacts affichés
-  const listContacts = contacts.sort((a, b) => a.pseudo.localeCompare(b.pseudo)).map((contact, i) => {
-    return (
-      <TouchableOpacity
-        key={i}
-        style={styles.contactRow}
-        onPress={() => handleClickOpenMessage(contact)}
-      >
-        <Image source={contact.avatar} style={styles.avatar} />
-        <View style={styles.contactInfo}>
-          <TextContainer
-            title={contact.pseudo}
-            style={styles.containerNewMessage}
-          />
-          {(contact.invitation === "issued") && <Text style={[styles.invitationText]}>Attente réponse</Text>}
-          {(contact.invitation === "received") && <Text style={[styles.invitationText, { color: "#00CC00" }]}>Invitation ?</Text>}
-          {(contact.invitation === "denied") && <Text style={[styles.invitationText, { color: "#FF0000" }]}>Refusée</Text>}
-          {showNewMessage(contact)}
+  // Rendu de la liste de contacts affichés
+  const listContacts = contacts
+    .sort((a, b) => a.pseudo.localeCompare(b.pseudo)) // Trie les contacts par pseudo
+    .map((contact, i) => {
+      return (
+        <TouchableOpacity
+          key={i} // Clé unique pour chaque contact
+          style={styles.contactRow} // Style pour chaque ligne de contact
+          onPress={() => handleClickOpenMessage(contact)} // Fonction appelée lors de la pression sur un contact
+        >
+          <Image source={contact.avatar} style={styles.avatar} />{" "}
+          {/* Avatar du contact */}
+          <View style={styles.contactInfo}>
+            <TextContainer
+              title={contact.pseudo} // Pseudo du contact
+              style={styles.containerNewMessage}
+            />
+            {contact.invitation === "issued" && (
+              <Text style={[styles.invitationText]}>Attente réponse</Text> // Affiche "Attente réponse" si l'invitation est en attente
+            )}
+            {contact.invitation === "received" && (
+              <Text style={[styles.invitationText, { color: "#00CC00" }]}>
+                Invitation ?
+              </Text> // Affiche "Invitation ?" si l'invitation est reçue
+            )}
+            {contact.invitation === "denied" && (
+              <Text style={[styles.invitationText, { color: "#FF0000" }]}>
+                Refusée
+              </Text> // Affiche "Refusée" si l'invitation est refusée
+            )}
+            {showNewMessage(contact)}{" "}
+            {/* Affiche "Nouveau message" si applicable */}
+          </View>
+        </TouchableOpacity>
+      );
+    });
 
-        </View>
-      </TouchableOpacity>
-    )
-  });
-
-  const scroll = useRef();
+  const scroll = useRef(); // Référence pour l'élément de défilement
 
   return (
-    <TouchableWithoutFeedback onPress={() => {
-      Keyboard.dismiss();
-      setIsModalVisible(false);
-      setIsModalAnswerVisible(false);
-    }} accessible={false}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        setIsModalVisible(false);
+        setIsModalAnswerVisible(false);
+      }}
+      accessible={false}
+    >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -246,16 +286,16 @@ export default function ChatScreen({ navigation }) {
               onSelectItem={(item) => item && handleOpenInvitation(item.title)}
               dataSet={searchContacts}
               textInputProps={{
-                placeholder: 'Rechercher un(e) ami(e)',
+                placeholder: "Rechercher un(e) ami(e)",
                 style: {
                   fontSize: 16,
                 },
               }}
-              direction={Platform.select({ ios: 'down' })}
+              direction={Platform.select({ ios: "down" })}
               inputContainerStyle={styles.inputdropdownContainer}
               containerStyle={styles.dropdownContainer}
               suggestionsListContainerStyle={styles.suggestionListContainer}
-              suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+              suggestionsListMaxHeight={Dimensions.get("window").height * 0.4}
               clearOnFocus={false}
               closeOnSubmit={true}
               onClear={() => onClearPress()}
@@ -273,8 +313,10 @@ export default function ChatScreen({ navigation }) {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.scrollView}
-              showsVerticalScrollIndicator={false}>
+            <ScrollView
+              style={styles.scrollView}
+              showsVerticalScrollIndicator={false}
+            >
               {listContacts}
             </ScrollView>
           </View>

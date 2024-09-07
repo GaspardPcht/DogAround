@@ -59,47 +59,52 @@ export default function SignUpScreen({ navigation }) {
 
   //Raz ville
   const onClearPress = () => {
-    setSuggestionsList([]);
-  }
+    setSuggestionsList([]); // Efface la liste des suggestions en la remplaçant par un tableau vide
+  };
 
   //Recherche ville
   const getSuggestions = (query) => {
-    // Prevent search with an empty query
-    if (query === '') {
+    // Empêche la recherche avec une requête vide
+    if (query === "") {
       return;
     }
 
-    fetch(`https://api-adresse.data.gouv.fr/search/?q=${query}&type=municipality&autocomplete=0`)
-      .then((response) => response.json())
-      .then(data => {
+    // Effectue une requête à l'API pour obtenir des suggestions de villes
+    fetch(
+      `https://api-adresse.data.gouv.fr/search/?q=${query}&type=municipality&autocomplete=0`
+    )
+      .then((response) => response.json()) // Convertit la réponse en JSON
+      .then((data) => {
         try {
           if (data.features) {
+            // Si des fonctionnalités sont présentes dans les données de réponse
+            // Crée une liste de suggestions en extrayant le nom de chaque fonctionnalité
             const suggestions = data.features.map((data, i) => {
-              return { id: (i + 1), title: data.properties.name };
+              return { id: i + 1, title: data.properties.name };
             });
-            setSuggestionsList(suggestions);
+            setSuggestionsList(suggestions); // Met à jour la liste des suggestions avec les nouvelles suggestions
+          } else {
+            setSuggestionsList([]); // Si aucune fonctionnalité n'est présente, efface la liste des suggestions
           }
-          else {
-            setSuggestionsList([]);
-          }
-        }
-        catch {
-          setSuggestionsList([]);
+        } catch {
+          setSuggestionsList([]); // En cas d'erreur, efface la liste des suggestions
         }
       });
-
   };
 
   const handleRegister = () => {
+    // Vérifie si les mots de passe correspondent
     if (password !== confirmPassword) {
-      setErrorMessage("Les mots de passe ne correspondent pas");
-      return;
+      setErrorMessage("Les mots de passe ne correspondent pas"); // Affiche un message d'erreur si les mots de passe ne correspondent pas
+      return; // Arrête l'exécution de la fonction
     }
 
+    // Envoie une requête POST à l'API pour enregistrer un nouvel utilisateur
     fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", // Méthode HTTP utilisée pour la requête
+      headers: { "Content-Type": "application/json" }, // En-têtes de la requête
       body: JSON.stringify({
+        // Corps de la requête, converti en JSON
         avatar: 34,
         email: email,
         pseudo: pseudo,
@@ -109,9 +114,11 @@ export default function SignUpScreen({ navigation }) {
         city: city,
       }),
     })
-      .then((response) => response.json())
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
+        // Vérifie si l'enregistrement a réussi
         if (data.result) {
+          // Si l'enregistrement a réussi, met à jour l'état de l'application avec les informations de l'utilisateur
           dispatch(
             login({
               email,
@@ -121,6 +128,7 @@ export default function SignUpScreen({ navigation }) {
               token: data.token,
             })
           );
+          // Réinitialise les champs du formulaire
           setEmail("");
           setPseudo("");
           setPassword("");
@@ -129,23 +137,27 @@ export default function SignUpScreen({ navigation }) {
           setName("");
           setCity("");
           setErrorMessage("");
+          // Navigue vers l'écran "Map" de l'application
           navigation.navigate("TabNavigator", { screen: "Map" });
         } else {
+          // Si l'enregistrement a échoué, affiche un message d'erreur
           setErrorMessage("Une erreur est survenue. Veuillez réessayer.");
         }
-      })
+      });
   };
 
+  // Utilise useEffect pour exécuter du code après le rendu du composant
   useEffect(() => {
+    // Si les ressources sont chargées ou s'il y a une erreur, cache l'écran de démarrage
     if (loaded || error) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync(); // Cache l'écran de démarrage de manière asynchrone
     }
-  }, [loaded, error]);
+  }, [loaded, error]); // Dépendances : le code s'exécute lorsque 'loaded' ou 'error' change
 
+  // Si les ressources ne sont pas encore chargées et qu'il n'y a pas d'erreur, ne rien rendre (retourne null)
   if (!loaded && !error) {
-    return null;
+    return null; // Ne rend rien tant que les ressources ne sont pas prêtes
   }
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
@@ -186,16 +198,16 @@ export default function SignUpScreen({ navigation }) {
                 onSelectItem={(item) => item && setCity(item.title)}
                 dataSet={suggestionsList}
                 textInputProps={{
-                  placeholder: 'Ville',
+                  placeholder: "Ville",
                   style: {
                     fontSize: 14,
                   },
                 }}
-                direction={Platform.select({ ios: 'down' })}
+                direction={Platform.select({ ios: "down" })}
                 inputContainerStyle={styles.inputdropdownContainer}
                 containerStyle={styles.dropdownContainer}
                 suggestionsListContainerStyle={styles.suggestionListContainer}
-                suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+                suggestionsListMaxHeight={Dimensions.get("window").height * 0.4}
                 clearOnFocus={false}
                 closeOnSubmit={true}
                 onClear={() => onClearPress()}

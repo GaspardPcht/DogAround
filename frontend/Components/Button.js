@@ -13,6 +13,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 //Button component 
 export default function Btn({ title, style, onPress }) {
+  // Chargement des polices avec useFonts
   const [loaded, error] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -20,16 +21,17 @@ export default function Btn({ title, style, onPress }) {
     Poppins_700Bold,
   });
 
+  // Utilisation de useEffect pour cacher l'écran de démarrage lorsque les polices sont chargées ou en cas d'erreur
   useEffect(() => {
     if (loaded || error) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync(); // Cache l'écran de démarrage
     }
   }, [loaded, error]);
 
+  // Si les polices ne sont pas encore chargées et qu'il n'y a pas d'erreur, retourne null
   if (!loaded && !error) {
     return null;
   }
-
   return (
     <View style={styles.container}>
       <TouchableOpacity style={[styles.button, style]} onPress={onPress}>

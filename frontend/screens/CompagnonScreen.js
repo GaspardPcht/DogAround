@@ -25,103 +25,131 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Dropdown } from 'react-native-element-dropdown';
 
 export default function CompagnonScreen({ navigation, route }) {
+  // Hook pour vérifier si l'écran est focalisé
   const isFocused = useIsFocused();
+
+  // Sélection de l'état de l'utilisateur dans le store Redux
   const user = useSelector((state) => state.user.value);
 
-  const [name, setName] = useState('');
-  const [dogBreed, setDogBreed] = useState('');
-  const [weight, setWeight] = useState('');
-  const [sex, setSex] = useState('');
-  const [comment, setComment] = useState('');
+  // États locaux pour gérer les informations du compagnon
+  const [name, setName] = useState("");
+  const [dogBreed, setDogBreed] = useState("");
+  const [weight, setWeight] = useState("");
+  const [sex, setSex] = useState("");
+  const [comment, setComment] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // État pour gérer la visibilité de la modal
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // État pour gérer l'avatar sélectionné
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
+  // Données pour le sexe du compagnon
   const datasex = [
-    { label: 'Male', value: '1' },
-    { label: 'Femelle', value: '2' },
+    { label: "Male", value: "1" },
+    { label: "Femelle", value: "2" },
   ];
 
+  // Récupération des paramètres de la route pour l'édition du compagnon
   const editCompagnon = route.params.compagnon;
 
+  // Fonction pour fermer l'écran et naviguer vers l'onglet "Compte"
   const handleClickCloseScreen = () => {
     navigation.navigate("TabNavigator", { screen: "Compte" });
   };
 
+  // Fonction pour ouvrir la modal
   const handleClickOpenModal = () => {
     setIsModalVisible(true);
   };
 
+  // Fonction pour fermer la modal
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
 
+  // Fonction pour sélectionner un avatar
   const handleSelectAvatar = (avatar) => {
     setSelectedAvatar(avatar.source);
   };
-
+  // Fonction pour valider et mettre à jour les informations du compagnon
   const handleValidation = () => {
-    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/companions/update`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token:user.token,
-        avatar: selectedAvatar,
-        name: name,
-        weight: weight,
-        dogBreed: dogBreed,
-        sex: sex,
-        comment: comment,
-      })
-    })
-      .then((response) => response.json())
+    fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/companions/update`,
+      {
+        method: "POST", // Méthode HTTP utilisée pour la requête
+        headers: { "Content-Type": "application/json" }, // En-tête pour indiquer le type de contenu
+        body: JSON.stringify({
+          token: user.token, // Token de l'utilisateur pour l'authentification
+          avatar: selectedAvatar, // Avatar sélectionné
+          name: name, // Nom du compagnon
+          weight: weight, // Poids du compagnon
+          dogBreed: dogBreed, // Race du chien
+          sex: sex, // Sexe du compagnon
+          comment: comment, // Commentaire
+        }),
+      }
+    )
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         if (data.result) {
+          // Si la mise à jour a réussi, navigue vers l'écran "Compte"
           navigation.navigate("TabNavigator", { screen: "Compte" });
         } else {
+          // Sinon, affiche le message d'erreur
           setErrorMessage(data.error);
         }
-      })
+      });
   };
 
+  // Fonction pour supprimer un compagnon
   const handleDelete = () => {
-    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/companions/delete`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token:user.token,
-        name: name,
-      })
-    })
-      .then((response) => response.json())
+    fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/companions/delete`,
+      {
+        method: "DELETE", // Méthode HTTP utilisée pour la requête
+        headers: { "Content-Type": "application/json" }, // En-tête pour indiquer le type de contenu
+        body: JSON.stringify({
+          token: user.token, // Token de l'utilisateur pour l'authentification
+          name: name, // Nom du compagnon à supprimer
+        }),
+      }
+    )
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         if (data.result) {
+          // Si la suppression a réussi, navigue vers l'écran "Compte"
           navigation.navigate("TabNavigator", { screen: "Compte" });
         } else {
+          // Sinon, affiche le message d'erreur
           setErrorMessage(data.error);
         }
-      })
+      });
   };
 
   useEffect(() => {
-    //Récupération donnée compagnon
+    // Récupération des données du compagnon
     if (isFocused) {
       if (editCompagnon) {
         fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/companions`, {
-          method: 'POST',
+          method: "POST", // Méthode HTTP utilisée pour la requête
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json", // En-tête pour indiquer le type de contenu
           },
           body: JSON.stringify({
-            token: user.token
-          })
+            token: user.token, // Token de l'utilisateur pour l'authentification
+          }),
         })
-          .then((response) => response.json())
+          .then((response) => response.json()) // Convertit la réponse en JSON
           .then((data) => {
-            const datacompanion = data.companions.filter(e=> e.name===editCompagnon)[0];
+            // Filtre pour trouver le compagnon à éditer
+            const datacompanion = data.companions.filter(
+              (e) => e.name === editCompagnon
+            )[0];
             /* console.log(data) */
             if (data.result) {
+              // Mise à jour des états avec les données du compagnon
               setName(datacompanion.name);
               setDogBreed(datacompanion.dogBreed);
               setWeight(datacompanion.weight);
@@ -130,47 +158,54 @@ export default function CompagnonScreen({ navigation, route }) {
               setSelectedAvatar(datacompanion.avatar);
             }
           });
-      }
-      else {
-        setName('');
-        setDogBreed('');
-        setWeight('');
-        setSex('');
-        setComment('');
+      } else {
+        // Réinitialisation des états si aucun compagnon n'est à éditer
+        setName("");
+        setDogBreed("");
+        setWeight("");
+        setSex("");
+        setComment("");
         setSelectedAvatar(require("../assets/avatars/chien_1.png"));
       }
     }
-  }, [isFocused])
+  }, [isFocused]); // Dépendance sur isFocused pour exécuter l'effet lorsque l'écran est focalisé
 
+  // Création d'une référence pour un élément de défilement
   const scroll = useRef();
-  
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={10}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={10}
+      >
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           ref={scroll}
           onContentSizeChange={() => {
             scroll.current.scrollToEnd();
-          }}>
+          }}
+        >
           <View style={styles.header}>
             <TouchableOpacity onPress={handleClickCloseScreen}>
               <FontAwesome name="times" size={25} color="#000" />
             </TouchableOpacity>
           </View>
-          {editCompagnon&&<Text style={styles.title}>{name}</Text>}
-          {!editCompagnon&&<TextInput
-            style={styles.titleInput}
-            placeholder="Editer Nom"
-            value={name}
-            onChangeText={(value) => setName(value)}>
-          </TextInput>}
+          {editCompagnon && <Text style={styles.title}>{name}</Text>}
+          {!editCompagnon && (
+            <TextInput
+              style={styles.titleInput}
+              placeholder="Editer Nom"
+              value={name}
+              onChangeText={(value) => setName(value)}
+            ></TextInput>
+          )}
           <View style={styles.avatarWrapper}>
             <View style={styles.avatarContainer}>
               <Image
                 source={
-                  selectedAvatar ||
-                  require("../assets/avatars/chien_1.png")
+                  selectedAvatar || require("../assets/avatars/chien_1.png")
                 }
                 style={styles.avatar}
               />
@@ -188,15 +223,15 @@ export default function CompagnonScreen({ navigation, route }) {
               placeholder="Race"
               value={dogBreed}
               onChangeText={(value) => setDogBreed(value)}
-              autoCorrect={true}>
-            </TextInput>
+              autoCorrect={true}
+            ></TextInput>
             <TextInput
               style={styles.input}
               placeholder="Poids en kg"
               value={String(weight)}
               onChangeText={(value) => setWeight(value)}
-              inputMode="numeric">
-            </TextInput>
+              inputMode="numeric"
+            ></TextInput>
             <Dropdown
               style={styles.dropdown}
               placeholderStyle={styles.placeholderStyle}
@@ -205,9 +240,9 @@ export default function CompagnonScreen({ navigation, route }) {
               search={false}
               labelField="label"
               valueField="value"
-              placeholder='Select'
+              placeholder="Select"
               value={String(sex)}
-              onChange={item => {
+              onChange={(item) => {
                 setSex(item.value);
               }}
             />
@@ -217,21 +252,23 @@ export default function CompagnonScreen({ navigation, route }) {
             placeholder="Description"
             value={comment}
             multiline={true}
-            onChangeText={(value) => setComment(value)}>
-          </TextInput>
+            onChangeText={(value) => setComment(value)}
+          ></TextInput>
           {errorMessage ? (
             <Text style={styles.errorText}>{errorMessage}</Text>
           ) : null}
           <Btn
-            style={{margin: 5}}
+            style={{ margin: 5 }}
             title="Valider"
             onPress={handleValidation}
           />
-          {editCompagnon&&<Btn
-            style={{margin: 15,backgroundColor:"#FF0000"}}
-            title="Delete"
-            onPress={handleDelete}
-          />}
+          {editCompagnon && (
+            <Btn
+              style={{ margin: 15, backgroundColor: "#FF0000" }}
+              title="Delete"
+              onPress={handleDelete}
+            />
+          )}
           <ModalAvatar
             visible={isModalVisible}
             onClose={handleCloseModal}
@@ -239,7 +276,8 @@ export default function CompagnonScreen({ navigation, route }) {
           />
         </ScrollView>
       </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>);
+    </TouchableWithoutFeedback>
+  );
 }
 
 const styles = StyleSheet.create({

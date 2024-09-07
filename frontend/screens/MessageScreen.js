@@ -24,81 +24,91 @@ import Input from "../Components/Input";
 
 export default function MessageScreen({ navigation, route }) {
   const user = useSelector((state) => state.user.value); //Recuperation paramètres de l'utilsateur stocké dans le STORE
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [update, setUpdate] = useState(false);
   const [dataMessage, setDataMessage] = useState([]);
 
-  //Récupération props
+  // Récupération des paramètres de la route
   const discussion_id = route.params.discussion_id;
   const discussion_pseudo = route.params.discussion_pseudo;
 
   /* console.log(discussion_id) */
 
-  //Fonction Retour au screen précédent
+  // Fonction pour revenir à l'écran précédent
   const handleClickBack = () => {
     navigation.goBack();
   };
 
-  //Fonction Récupération de tous les messages
+  // Fonction pour récupérer tous les messages d'une discussion
   const getMessages = () => {
-    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/discussions/messages/${user.token}?id=${discussion_id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
+    fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/discussions/messages/${user.token}?id=${discussion_id}`,
+      {
+        method: "GET", // Méthode HTTP utilisée pour la requête
+        headers: {
+          "Content-Type": "application/json", // En-tête pour indiquer le type de contenu
+        },
+      }
+    )
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
-        data.result && setDataMessage(data.messages);
+        // Si la récupération des messages a réussi, met à jour l'état avec les messages
+        if (data.result) {
+          setDataMessage(data.messages);
+        }
       });
-  }
-
-  //Fonction Nouveau message
+  };
+  // Fonction pour envoyer un nouveau message
   const newMessage = (message) => {
-    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/discussions/messages/${user.token}?id=${discussion_id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: message
-      })
-    })
-      .then((response) => response.json())
+    fetch(
+      `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/discussions/messages/${user.token}?id=${discussion_id}`,
+      {
+        method: "PUT", // Méthode HTTP utilisée pour la requête
+        headers: { "Content-Type": "application/json" }, // En-tête pour indiquer le type de contenu
+        body: JSON.stringify({
+          message: message, // Corps de la requête contenant le message
+        }),
+      }
+    )
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
-        data.result && setUpdate(!update);
-        setMessage('');
-        Keyboard.dismiss();
-      })
+        // Si l'envoi du message a réussi, met à jour l'état et réinitialise le champ de message
+        if (data.result) {
+          setUpdate(!update); // Inverse l'état de mise à jour pour rafraîchir les messages
+          setMessage(""); // Réinitialise le champ de message
+          Keyboard.dismiss(); // Ferme le clavier
+        }
+      });
   };
 
   useEffect(() => {
-    //Rafraichissement des messages
+    // Rafraîchissement des messages toutes les 10 secondes
     const interval = setInterval(() => {
-      getMessages();
+      getMessages(); // Appelle la fonction pour récupérer les messages
     }, 10000);
 
-    //Raz Interval
+    // Nettoyage de l'intervalle lorsque le composant est démonté
     return () => clearInterval(interval);
-  }, [])
+  }, []); // Dépendance vide pour exécuter l'effet une seule fois après le montage
 
   useEffect(() => {
     //Mise à jour de l'affichage des messages à l'initialisation ou qu'un nouveau message est émi
     getMessages();
-  }, [update])
+  }, [update]);
 
-  //Rendu de la liste de messages affichés
+  // Rendu de la liste de messages affichés
   const listMessage = dataMessage.map((e, i) => {
-    /* const hours = new Date(e.date).toLocaleTimeString().slice(0, 5); */
-    /* const date = moment(e.date).locale('fr').format('lll'); */
-    const date = moment(e.date).locale('fr').fromNow();
+    // Formate la date du message en utilisant moment.js
+    const date = moment(e.date).locale("fr").fromNow();
+
+    // Vérifie si le message a été envoyé par l'utilisateur actuel
     if (user.pseudo !== e.pseudo) {
+      // Message reçu
       return (
         <View key={i} style={styles.messageWrapper}>
           <View style={styles.messageBubble}>
             <View style={styles.messageHeader}>
-              <Image
-                source={e.avatar}
-                style={styles.avatar}
-              />
+              <Image source={e.avatar} style={styles.avatar} />
               <View style={styles.messageInfo}>
                 <Text style={styles.messageName}>{e.pseudo}</Text>
                 <Text style={styles.messageTime}>{date}</Text>
@@ -107,18 +117,17 @@ export default function MessageScreen({ navigation, route }) {
             <Text style={styles.messageText}>{e.message}</Text>
           </View>
         </View>
-      )
-    }
-    //Message reçu
-    else {
+      );
+    } else {
+      // Message envoyé
       return (
-        <View key={i} style={[styles.messageWrapper, styles.messageWrapperSend]}>
+        <View
+          key={i}
+          style={[styles.messageWrapper, styles.messageWrapperSend]}
+        >
           <View style={styles.messageBubbleSend}>
             <View style={styles.messageHeaderSend}>
-              <Image
-                source={e.avatar}
-                style={styles.avatar}
-              />
+              <Image source={e.avatar} style={styles.avatar} />
               <View style={styles.messageInfoSend}>
                 <Text style={styles.messageNameSend}>{e.pseudo}</Text>
                 <Text style={styles.messageTimeSend}>{date}</Text>
@@ -127,33 +136,58 @@ export default function MessageScreen({ navigation, route }) {
             <Text style={styles.messageTextSend}>{e.message}</Text>
           </View>
         </View>
-      )
+      );
     }
-  })
+  });
 
+  // Référence pour le défilement
   const scroll = useRef();
 
   return (
     <View style={styles.container}>
       {/* <SafeAreaView/> */}
       <View style={styles.headerMessage}>
-        <TouchableOpacity style={styles.iconButton} activeOpacity={0.8} onPress={handleClickBack}>
-          <FontAwesome name="arrow-left" size={40} color="#000" style={{ zIndex:1}}/>
+        <TouchableOpacity
+          style={styles.iconButton}
+          activeOpacity={0.8}
+          onPress={handleClickBack}
+        >
+          <FontAwesome
+            name="arrow-left"
+            size={40}
+            color="#000"
+            style={{ zIndex: 1 }}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{discussion_pseudo}</Text>
       </View>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={10}>
-        <ScrollView contentContainerStyle={styles.messageContainer}
-          keyboardDismissMode='on-drag'
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={10}
+      >
+        <ScrollView
+          contentContainerStyle={styles.messageContainer}
+          keyboardDismissMode="on-drag"
           ref={scroll}
           onContentSizeChange={() => {
             scroll.current.scrollToEnd();
-          }}>
+          }}
+        >
           {listMessage}
         </ScrollView>
         <View style={styles.footer}>
-          <Input style={styles.input} placeholder="Message..." value={message} onChangeText={(value) => setMessage(value)} />
-          <TouchableOpacity style={styles.sendButton} activeOpacity={0.8} onPress={() => newMessage(message)}>
+          <Input
+            style={styles.input}
+            placeholder="Message..."
+            value={message}
+            onChangeText={(value) => setMessage(value)}
+          />
+          <TouchableOpacity
+            style={styles.sendButton}
+            activeOpacity={0.8}
+            onPress={() => newMessage(message)}
+          >
             <FontAwesome name="paper-plane" size={25} color="#7DBA84" />
           </TouchableOpacity>
         </View>

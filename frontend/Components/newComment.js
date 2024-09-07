@@ -17,28 +17,30 @@ import Input from "./Input";
 import TextContainer from "./TextContainer";
 import Correspondance from "../assets/avatars/Correspondance";
 
-export default function NewComment({ name }) { // Correction: utilisation des accolades pour passer les props
-  const [commentText, setCommentText] = useState('');
+export default function NewComment({ name }) {
+  // Correction: utilisation des accolades pour passer les props
+  // État pour le texte du commentaire
+  const [commentText, setCommentText] = useState("");
 
-  //date système
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleString('fr-FR', {
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+  // Date système
+  const currentDate = new Date(); // Obtient la date et l'heure actuelles
+  const formattedDate = currentDate.toLocaleString("fr-FR", {
+    month: "2-digit", // Mois au format 2 chiffres
+    day: "2-digit", // Jour au format 2 chiffres
+    hour: "2-digit", // Heure au format 2 chiffres
+    minute: "2-digit", // Minute au format 2 chiffres
   });
 
   return (
-    <View style={styles.newCommentContainer}> 
+    <View style={styles.newCommentContainer}>
       <View style={styles.commentTitle}>
         <Image
           style={styles.userAvatar}
-          source={require('../assets/avatars/Correspondance.png')} 
+          source={require("../assets/avatars/Correspondance.png")}
         />
         <View style={styles.commentTextContainer}>
           <Text style={styles.commentPseudo}>{name}</Text>
-          <Text style={styles.commentTime}>le {formattedDate}</Text> 
+          <Text style={styles.commentTime}>le {formattedDate}</Text>
         </View>
       </View>
       <Input

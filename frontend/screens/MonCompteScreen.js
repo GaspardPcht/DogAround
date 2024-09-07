@@ -7,63 +7,75 @@ import Input from "../Components/Input";
 import { useSelector } from "react-redux";
 
 export default function MonCompteScreen({ navigation }) {
+  // Utilise useIsFocused pour vérifier si le composant est focalisé
   const isFocused = useIsFocused();
+
+  // Utilise useSelector pour obtenir les informations de l'utilisateur depuis le store Redux
   const user = useSelector((state) => state.user.value);
+
+  // État pour stocker les données des compagnons
   const [dataCompanions, setDataCompanions] = useState([]);
 
+  // Fonction pour fermer l'écran actuel et naviguer vers l'écran "Map" dans le TabNavigator
   const handleClickCloseScreen = () => {
     navigation.navigate("TabNavigator", { screen: "Map" });
   };
 
+  // Fonction pour ouvrir l'écran des préférences
   const handleClickOpenPreference = () => {
     navigation.navigate("Preference");
   };
 
+  // Fonction pour naviguer vers l'écran de profil
   const handleClickGoToProfil = () => {
     navigation.navigate("Profil");
-  }
+  };
 
+  // Fonction pour naviguer vers l'écran de détail d'un compagnon
   const handleClickGoToCompagnon = (compagnon) => {
-    navigation.navigate("Compagnon", { compagnon : compagnon });
-  }
+    navigation.navigate("Compagnon", { compagnon: compagnon });
+  };
 
   useEffect(() => {
-    //Récupération donnée compagnon
+    // Récupération des données des compagnons lorsque le composant est focalisé
     if (isFocused) {
       fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/companions`, {
-        method: 'POST',
+        method: "POST", // Méthode HTTP utilisée pour la requête
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json", // En-tête pour indiquer le type de contenu
         },
         body: JSON.stringify({
-          token: user.token
-        })
+          token: user.token, // Corps de la requête contenant le token de l'utilisateur
+        }),
       })
-        .then((response) => response.json())
+        .then((response) => response.json()) // Convertit la réponse en JSON
         .then((data) => {
+          // Vérifie si la récupération des données a réussi
           if (data.result) {
-            setDataCompanions(data.companions);
+            setDataCompanions(data.companions); // Met à jour l'état avec les données des compagnons
           }
         });
     }
-  }, [isFocused])
+  }, [isFocused]); // Dépendance : le code s'exécute lorsque 'isFocused' change
 
+  // Génère une liste de composants View pour chaque compagnon dans dataCompanions
   const companions = dataCompanions.map((e, i) => {
     return (
+      // Chaque View a une clé unique basée sur l'index
       <View key={i} style={styles.inputRow}>
+        {/* Affiche le nom du compagnon */}
         <Text style={styles.compagnonText}>{e.name}</Text>
-        <TouchableOpacity style={styles.editButton} onPress={()=>handleClickGoToCompagnon(e.name)}>
-          {/* <Text style={styles.editText}>EDIT</Text> */}
-          <FontAwesome
-              name="pencil"
-              size={18}
-              color="#000"
-              /* onPress={handleClickCloseScreen} */
-            />
+        {/* Bouton pour éditer les informations du compagnon */}
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => handleClickGoToCompagnon(e.name)} // Appelle la fonction handleClickGoToCompagnon avec le nom du compagnon
+        >
+          {/* Icône de crayon pour indiquer l'édition */}
+          <FontAwesome name="pencil" size={18} color="#000" />
         </TouchableOpacity>
       </View>
-    )
-  })
+    );
+  });
 
   return (
     <View style={styles.container}>
@@ -115,13 +127,14 @@ export default function MonCompteScreen({ navigation }) {
           <Text style={styles.secondText}>
             <Text style={styles.text}>MES COMPAGNONS</Text>
           </Text>
-          <TouchableOpacity style={styles.plusButton} onPress={()=>handleClickGoToCompagnon('')}>
+          <TouchableOpacity
+            style={styles.plusButton}
+            onPress={() => handleClickGoToCompagnon("")}
+          >
             <FontAwesome name="plus" size={25} color="#416165" />
           </TouchableOpacity>
         </View>
-        <View style={styles.inputCompagnon}>
-          {companions}
-        </View>
+        <View style={styles.inputCompagnon}>{companions}</View>
       </ScrollView>
     </View>
   );

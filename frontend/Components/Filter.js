@@ -9,81 +9,83 @@ import { useDispatch } from 'react-redux';
 import { storeFilters, storeCity } from '../reducers/user'
 
 export default function Filter({ userInfo, validFilters }) {
-  const dispatch = useDispatch();
-  const [city, setCity] = useState(userInfo.cityfield.cityname); //Etat champ Ville
-  const [suggestionsList, setSuggestionsList] = useState([{ id: '1', title: userInfo.cityfield.cityname }]);
-  const [filters, setFilters] = useState(userInfo.filtres); //Etat filtres sélectionnés
-  const [optionCity, setOptionCity] = useState(userInfo.cityfield.cityname); //Sélection Ma position/Ville
+ const dispatch = useDispatch();
+ const [city, setCity] = useState(userInfo.cityfield.cityname); // État champ Ville
+ const [suggestionsList, setSuggestionsList] = useState([
+   { id: "1", title: userInfo.cityfield.cityname },
+ ]);
+ const [filters, setFilters] = useState(userInfo.filtres); // État filtres sélectionnés
+ const [optionCity, setOptionCity] = useState(userInfo.cityfield.cityname); // Sélection Ma position/Ville
 
-  //Fonction sélection filtres
-  const selectFilter = (filter) => {
-    const newDataFilters = filters.filter(e => e !== filter);
+ // Fonction sélection filtres
+ const selectFilter = (filter) => {
+   const newDataFilters = filters.filter((e) => e !== filter);
 
-    if (newDataFilters.length < filters.length) {
-      //Retire le filtre
-      setFilters(newDataFilters);
-    }
-    else {
-      //Ajout nouveau filtre
-      setFilters([...filters, filter]);
-    }
-  }
+   if (newDataFilters.length < filters.length) {
+     // Retire le filtre
+     setFilters(newDataFilters);
+   } else {
+     // Ajout nouveau filtre
+     setFilters([...filters, filter]);
+   }
+ };
 
-  //Raz ville
-  const onClearPress = () => {
-    setSuggestionsList([]);
-  }
+ // Raz ville
+ const onClearPress = () => {
+   setSuggestionsList([]);
+ };
 
-  //Recherche ville
-  const getSuggestions = (query) => {
-    // Prevent search with an empty query
-    if (query === '') {
-      return;
-    }
+ // Recherche ville
+ const getSuggestions = (query) => {
+   // Empêche la recherche avec une requête vide
+   if (query === "") {
+     return;
+   }
 
-    fetch(`https://api-adresse.data.gouv.fr/search/?q=${query}&type=municipality&autocomplete=0`)
-      .then((response) => response.json())
-      .then(data => {
-        if (data.features.length > 0) {
-          const suggestions = data.features.map((data, i) => {
-            return { id: (i + 1), title: data.properties.name };
-          });
-          setSuggestionsList(suggestions);
-        }
-        else {
-          setSuggestionsList([]);
-        }
-      });
+   fetch(
+     `https://api-adresse.data.gouv.fr/search/?q=${query}&type=municipality&autocomplete=0`
+   )
+     .then((response) => response.json())
+     .then((data) => {
+       if (data.features.length > 0) {
+         const suggestions = data.features.map((data, i) => {
+           return { id: i + 1, title: data.properties.name };
+         });
+         setSuggestionsList(suggestions);
+       } else {
+         setSuggestionsList([]);
+       }
+     });
+ };
 
-  };
-
-  //Confirmation filtres
-  const confirmation = () => {
-    dispatch(storeFilters(filters));
-    //Positionnement des markers par rapport à la ville
-    if (optionCity) {
-      fetch(`https://api-adresse.data.gouv.fr/search/?q=${city}`)
-        .then((response) => response.json())
-        .then((data) => {
-          const newCity = {
-            cityname: data.features[0].properties.city,
-            latitude: data.features[0].geometry.coordinates[1],
-            longitude: data.features[0].geometry.coordinates[0],
-          };
-          dispatch(storeCity(newCity));
-        })
-    }
-    //Positionnement des markers par rapport à la position
-    else {
-      dispatch(storeCity({
-        cityname: '',
-        latitude: 0.1,
-        longitude: 0.1,
-      }));
-    }
-    validFilters();
-  }
-
+ // Confirmation filtres
+ const confirmation = () => {
+   dispatch(storeFilters(filters));
+   // Positionnement des markers par rapport à la ville
+   if (optionCity) {
+     fetch(`https://api-adresse.data.gouv.fr/search/?q=${city}`)
+       .then((response) => response.json())
+       .then((data) => {
+         const newCity = {
+           cityname: data.features[0].properties.city,
+           latitude: data.features[0].geometry.coordinates[1],
+           longitude: data.features[0].geometry.coordinates[0],
+         };
+         dispatch(storeCity(newCity));
+       });
+   }
+   // Positionnement des markers par rapport à la position
+   else {
+     dispatch(
+       storeCity({
+         cityname: "",
+         latitude: 0.1,
+         longitude: 0.1,
+       })
+     );
+   }
+   validFilters();
+ };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Filtres</Text>

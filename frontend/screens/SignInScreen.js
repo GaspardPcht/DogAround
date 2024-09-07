@@ -48,51 +48,62 @@ export default function SignInScreen({ navigation }) {
     Poppins_700Bold,
   });
 
+  // Utilise useEffect pour exécuter du code après le rendu du composant
   useEffect(() => {
+    // Si les ressources sont chargées ou s'il y a une erreur, cache l'écran de démarrage
     if (loaded || error) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync(); // Cache l'écran de démarrage de manière asynchrone
     }
-  }, [loaded, error]);
+  }, [loaded, error]); // Dépendances : le code s'exécute lorsque 'loaded' ou 'error' change
 
+  // Si les ressources ne sont pas encore chargées et qu'il n'y a pas d'erreur, ne rien rendre (retourne null)
   if (!loaded && !error) {
-    return null;
+    return null; // Ne rend rien tant que les ressources ne sont pas prêtes
   }
 
-  const handleConnection = () => {
-    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/signin`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          dispatch(
-            login({
-              email: email,
-              pseudo: data.pseudo,
-              city: data.city,
-              avatar: data.avatar,
-              token: data.token,
-              favorites: data.favorites,
-            })
-          );
-          setEmail("");
-          setPassword("");
-          setErrorMessage("");
-          navigation.navigate("TabNavigator", { screen: "Map" });
-        } else {
-          setErrorMessage("Email ou Mot de passe incorrect"); // affiche un message d'error si le mdp ou email pas bon ou manquant
-        }
-      });
-  };
+const handleConnection = () => {
+  // Envoie une requête POST à l'API pour se connecter
+  fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/signin`, {
+    method: "POST", // Méthode HTTP utilisée pour la requête
+    headers: { "Content-Type": "application/json" }, // En-têtes de la requête
+    body: JSON.stringify({
+      // Corps de la requête, converti en JSON
+      email: email,
+      password: password,
+    }),
+  })
+    .then((response) => response.json()) // Convertit la réponse en JSON
+    .then((data) => {
+      // Vérifie si la connexion a réussi
+      if (data.result) {
+        // Si la connexion a réussi, met à jour l'état de l'application avec les informations de l'utilisateur
+        dispatch(
+          login({
+            email: email,
+            pseudo: data.pseudo,
+            city: data.city,
+            avatar: data.avatar,
+            token: data.token,
+            favorites: data.favorites,
+          })
+        );
+        // Réinitialise les champs du formulaire
+        setEmail("");
+        setPassword("");
+        setErrorMessage("");
+        // Navigue vers l'écran "Map" de l'application
+        navigation.navigate("TabNavigator", { screen: "Map" });
+      } else {
+        // Si la connexion a échoué, affiche un message d'erreur
+        setErrorMessage("Email ou Mot de passe incorrect"); // Affiche un message d'erreur si le mot de passe ou l'email est incorrect ou manquant
+      }
+    });
+};
 
-  const handleClick = () => {
-    navigation.navigate("SignUp");
-  };
+const handleClick = () => {
+  // Navigue vers l'écran d'inscription
+  navigation.navigate("SignUp");
+};
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

@@ -32,23 +32,29 @@ export default function MapScreen({ navigation }) {
   });
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value); //Recuperation paramètres de l'utilsateur stocké dans le STORE
-  const places = useSelector((state) => state.places.value); //Recuperation des places dans le STORE
+  const user = useSelector((state) => state.user.value); // Récupération des paramètres de l'utilisateur stockés dans le STORE
+  const places = useSelector((state) => state.places.value); // Récupération des places dans le STORE
+
+  // Déclaration de l'état contenant la position actuelle de l'utilisateur
   const [currentPosition, setCurrentPosition] = useState({
     latitude: 48.866667,
     longitude: 2.333333,
-  }); //Déclaration état contenant la position de l'utisateur
+  });
+
+  // Déclaration de l'état contenant la région actuelle de l'utilisateur
   const [regionPosition, setRegionPosition] = useState({
     latitude: 48.866667,
     longitude: 2.333333,
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
-  }); //Déclaration état contenant la position de l'utisateur
-  const [showModal, setShowModal] = useState(false); //Affiche la modal Filter
+  });
+
+  // État pour afficher la modal Filter
+  const [showModal, setShowModal] = useState(false);
 
   /* console.log(user.pastilleMessage); */
 
-  //Fonction vérification si un nouveau message est arrivé. Chargé la 1ère fois que MapScreen s'ouvre
+  // Fonction pour vérifier si un nouveau message est arrivé. Chargée la première fois que MapScreen s'ouvre
   const notificationMessage = () => {
     fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/contacts/${user.token}`,
@@ -59,18 +65,18 @@ export default function MapScreen({ navigation }) {
         },
       }
     )
-      .then((response) => response.json())
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
         try {
           let pastille = false;
           if (data.result) {
-            //Récupération si un nouveau message existe sur une discussion
+            // Récupération si un nouveau message existe sur une discussion
             for (const element of data.contacts) {
               if (
                 element.invitation === "accepted" &&
                 element.discussion.newMessage !== null
               ) {
-                //nouveau IF car element.discussion.newMessage.pseudo n'existe pas toujours
+                // Vérifie si le pseudo du nouveau message n'est pas celui de l'utilisateur
                 if (element.discussion.newMessage.pseudo !== user.pseudo) {
                   /* console.log(element.discussion.newMessage.pseudo) */
                   pastille = true;
@@ -78,79 +84,82 @@ export default function MapScreen({ navigation }) {
                 }
               }
             }
-            dispatch(setPastilleMessage(pastille));
+            dispatch(setPastilleMessage(pastille)); // Met à jour l'état avec la pastille de message
           } else {
-            dispatch(setPastilleMessage(false));
+            dispatch(setPastilleMessage(false)); // Pas de nouveau message
           }
         } catch {
-          dispatch(setPastilleMessage(false));
+          dispatch(setPastilleMessage(false)); // En cas d'erreur, pas de nouveau message
         }
       });
   };
-
-  //Fonction Récupération des points d'intérêts autour d'une position'
+  // Fonction pour récupérer les points d'intérêts autour d'une position
   const getInfoMarkers = (latitude, longitude, radius) => {
     fetch(
       `${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/places/position/${latitude}/${longitude}/${radius}`,
       {
-        method: "GET",
+        method: "GET", // Méthode HTTP utilisée pour la requête
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", // En-tête pour indiquer le type de contenu
         },
       }
     )
-      .then((response) => response.json())
-
+      .then((response) => response.json()) // Convertit la réponse en JSON
       .then((data) => {
-        data.result && dispatch(importPlaces(data.places));
+        // Si la récupération des points d'intérêts a réussi, met à jour l'état avec les places
+        if (data.result) {
+          dispatch(importPlaces(data.places));
+        }
       });
   };
 
-  //Fonction mise à jour des filtres
+  // Fonction pour valider les filtres et fermer la modal
   const validFilters = () => {
     setShowModal(false);
   };
 
-  //Execution une seul fois
+  // Exécution une seule fois après le montage du composant
   useEffect(() => {
-    notificationMessage();
-    //Rafraichissement notification des messages
+    notificationMessage(); // Vérifie les notifications de messages
+
+    // Rafraîchissement des notifications de messages toutes les 10 secondes
     const interval = setInterval(() => {
       notificationMessage();
     }, 10000);
 
-    //Raz Interval
+    // Nettoyage de l'intervalle lorsque le composant est démonté
     return () => clearInterval(interval);
-  }, []);
+  }, []); // Dépendance vide pour exécuter l'effet une seule fois
 
   useEffect(() => {
-    //Demande autorisation partage location du téléphone
+    // Demande d'autorisation pour accéder à la localisation du téléphone
     if (!user.cityfield.cityname) {
       (async () => {
         const result = await Location.requestForegroundPermissionsAsync();
         const status = result.status;
 
         if (status === "granted") {
-          //Récupération location du téléphone
+          // Récupération de la localisation du téléphone
           Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
             const params = {
               longitude: location.coords.longitude,
               latitude: location.coords.latitude,
             };
 
-            //Récupération des points d'intérêts autour de l'utilisateur
+            // Récupération des points d'intérêts autour de l'utilisateur
             getInfoMarkers(params.latitude, params.longitude, user.radius);
-            setCurrentPosition(location.coords);
+            setCurrentPosition(location.coords); // Met à jour la position actuelle
             setRegionPosition({
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
-            });
+            }); // Met à jour la région actuelle
           });
         }
       })();
     } else {
+      // Si la ville de l'utilisateur est définie, utilise ses coordonnées pour récupérer les points d'intérêts
       getInfoMarkers(
         user.cityfield.latitude,
         user.cityfield.longitude,
@@ -161,15 +170,16 @@ export default function MapScreen({ navigation }) {
         longitude: user.cityfield.longitude,
         latitudeDelta: 0.05,
         longitudeDelta: 0.05,
-      });
+      }); // Met à jour la région actuelle
     }
-  }, [user.cityfield.cityname]);
+  }, [user.cityfield.cityname]); // Dépendance sur le nom de la ville de l'utilisateur
 
-  //Affichage des markers
+  // Affichage des markers
   const markers = places.map((e, i) => {
     let iconName = "";
     let iconColor = "#000000";
 
+    // Définition de l'icône et de la couleur en fonction du type de place
     if (e.type === "event") {
       iconName = "calendar";
     } else if (e.type === "favori") {
@@ -200,22 +210,25 @@ export default function MapScreen({ navigation }) {
       iconColor = "#FF0000";
     }
 
+    // Vérifie si le marker doit être affiché en fonction des filtres de l'utilisateur
     const showMarker = !user.filtres.some((filter) => e.type === filter);
     if (showMarker) {
       return (
         <Marker
-          key={i + 1}
-          coordinate={e.location}
-          onPress={() => handlePoiPress(e.google_id)}
+          key={i + 1} // Clé unique pour chaque marker
+          coordinate={e.location} // Coordonnées du marker
+          onPress={() => handlePoiPress(e.google_id)} // Fonction appelée lors de la pression sur le marker
         >
-          <FontAwesome name={iconName} size={40} color={iconColor} />
+          <FontAwesome name={iconName} size={40} color={iconColor} />{" "}
+          {/* Icône du marker */}
         </Marker>
       );
     }
   });
 
+  // Fonction pour gérer la pression sur un point d'intérêt
   function handlePoiPress(google_id) {
-    navigation.navigate("Poi", { google_id: google_id });
+    navigation.navigate("Poi", { google_id: google_id }); // Navigation vers l'écran "Poi" avec l'ID Google du point d'intérêt
   }
 
   return (

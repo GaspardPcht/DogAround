@@ -33,70 +33,83 @@ export default function ProfilScreen({ navigation }) {
   const [newPassword, setNewPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Fonction pour naviguer vers l'écran "Compte" dans le TabNavigator
   const handleClickCloseScreen = () => {
     navigation.navigate("TabNavigator", { screen: "Compte" });
   };
 
+  // Fonction pour gérer la modification des informations utilisateur
   const handleChangeInfos = () => {
+    // Vérifie si l'utilisateur est authentifié en vérifiant la présence du token
     if (!user.token) {
-      return;
+      return; // Si l'utilisateur n'est pas authentifié, arrête l'exécution de la fonction
     }
 
-    // Crée un objet data conditionnel 
+    // Crée un objet data conditionnel avec les informations à mettre à jour
     const dataToUpdate = {
-      avatar: selectedAvatar !== user.avatar ? selectedAvatar : undefined,
-      email: email !== user.email ? email : undefined,
-      pseudo: pseudo !== user.pseudo ? pseudo : undefined,
-      city: city !== user.city ? city : undefined,
-      password: password.length > 0 ? password : undefined,
-      newPassword: newPassword.length > 0 ? newPassword : undefined,
+      avatar: selectedAvatar !== user.avatar ? selectedAvatar : undefined, // Met à jour l'avatar si différent de l'actuel
+      email: email !== user.email ? email : undefined, // Met à jour l'email si différent de l'actuel
+      pseudo: pseudo !== user.pseudo ? pseudo : undefined, // Met à jour le pseudo si différent de l'actuel
+      city: city !== user.city ? city : undefined, // Met à jour la ville si différente de l'actuelle
+      password: password.length > 0 ? password : undefined, // Met à jour le mot de passe si non vide
+      newPassword: newPassword.length > 0 ? newPassword : undefined, // Met à jour le nouveau mot de passe si non vide
     };
-
-    // Permet de filtrer 
-    const filteredData = Object.fromEntries(
-      Object.entries(dataToUpdate).filter(([key, value]) => value !== undefined)
-    );
-
-    filteredData.token = user.token;
-    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/${user.token}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(filteredData),
-    })
-
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          dispatch(
-            login({
-              email: data.user.email,
-              pseudo: data.user.pseudo,
-              city: data.user.city,
-              token: data.user.token,
-              avatar: data.user.avatar,
-            })
-          );
-          setPassword("");
-          setNewPassword("");
-          setErrorMessage("");
-          navigation.navigate("TabNavigator", { screen: "Compte" });
-        } else {
-          setErrorMessage("Information invalide");
-        }
-      });
   };
 
+  // Permet de filtrer les données à mettre à jour en supprimant les valeurs undefined
+  const filteredData = Object.fromEntries(
+    Object.entries(dataToUpdate).filter(([key, value]) => value !== undefined)
+  );
+
+  // Ajoute le token de l'utilisateur aux données filtrées
+  filteredData.token = user.token;
+
+  // Envoie une requête PUT à l'API pour mettre à jour les informations utilisateur
+  fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/${user.token}`, {
+    method: "PUT", // Méthode HTTP utilisée pour la requête
+    headers: { "Content-Type": "application/json" }, // En-têtes de la requête
+    body: JSON.stringify(filteredData), // Corps de la requête, converti en JSON
+  })
+    .then((response) => response.json()) // Convertit la réponse en JSON
+    .then((data) => {
+      // Vérifie si la mise à jour a réussi
+      if (data.result) {
+        // Si la mise à jour a réussi, met à jour l'état de l'application avec les nouvelles informations de l'utilisateur
+        dispatch(
+          login({
+            email: data.user.email,
+            pseudo: data.user.pseudo,
+            city: data.user.city,
+            token: data.user.token,
+            avatar: data.user.avatar,
+          })
+        );
+        // Réinitialise les champs de mot de passe
+        setPassword("");
+        setNewPassword("");
+        setErrorMessage("");
+        // Navigue vers l'écran "Compte" de l'application
+        navigation.navigate("TabNavigator", { screen: "Compte" });
+      } else {
+        // Si la mise à jour a échoué, affiche un message d'erreur
+        setErrorMessage("Information invalide");
+      }
+    });
+
+  // Fonction pour ouvrir le modal
   const handleClickOpenModal = () => {
     setIsModalVisible(true);
   };
 
+  // Fonction pour fermer le modal
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
 
+  // Fonction pour sélectionner un avatar et fermer le modal
   const handleSelectAvatar = (avatar) => {
     setSelectedAvatar(avatar.source);
-     setIsModalVisible(false);
+    setIsModalVisible(false);
   };
 
   return (
@@ -115,7 +128,7 @@ export default function ProfilScreen({ navigation }) {
         <View style={styles.inputContainer}>
           <View style={styles.avatarWrapper}>
             <View style={styles.avatarContainer}>
-              <Image source={selectedAvatar}style={styles.avatar}/>
+              <Image source={selectedAvatar} style={styles.avatar} />
             </View>
             <TouchableOpacity
               style={styles.plusIcon}

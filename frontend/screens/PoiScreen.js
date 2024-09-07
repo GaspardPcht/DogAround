@@ -76,17 +76,22 @@ export default function PoiScreen({ navigation, route }) {
   const places = useSelector((state) => state.places.value); //Recuperation des places dans le STORE
   const pseudo = user.pseudo;
 
+  // Utilise useEffect pour exécuter du code après le rendu du composant
   useEffect(() => {
+    // Vérifie si le composant est focalisé
     if (isFocused) {
-      console.log("TEST");
+      console.log("TEST"); // Affiche "TEST" dans la console pour le débogage
 
+      // Vérifie si l'identifiant du POI est défini
       if (id) {
-        // Fetch du détail du POI
+        // Fetch du détail du POI en utilisant l'identifiant
         fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/places/id/${id}`)
-          .then((response) => response.json())
+          .then((response) => response.json()) // Convertit la réponse en JSON
           .then((data) => {
+            // Vérifie si les données du POI sont présentes
             if (data.place) {
-              poiObjet = {
+              // Crée un objet avec les détails du POI
+              const poiObjet = {
                 _id: data.place._id,
                 image: data.place.image,
                 nom: data.place.nom,
@@ -96,12 +101,13 @@ export default function PoiScreen({ navigation, route }) {
                 categorie: data.place.categorie,
                 location: data.place.location,
               };
+              // Met à jour l'état avec les informations du POI
               setPoiInfos(poiObjet);
             }
           });
       }
     }
-  }, [isFocused]);
+  }, [isFocused]); // Dépendance : le code s'exécute lorsque 'isFocused' change
 
   // press sur croix pour retour à la map
   const handleClickCloseScreen = () => {
@@ -149,15 +155,17 @@ export default function PoiScreen({ navigation, route }) {
     setIsLiked(!isLiked);
   };
 
-  //press sur + pour newComment
+  // Fonction pour gérer le clic sur le bouton "nouveau commentaire"
   const handlePressNewComment = () => {
-    setShowNewComment(!showNewComment);
+    setShowNewComment(!showNewComment); // Inverse l'affichage du formulaire de nouveau commentaire
   };
 
+  // Fonction pour naviguer vers l'écran "Event"
   const handleClickGoToEvent = () => {
     navigation.navigate("Event", { nom: poiInfos.nom, image: poiInfos.image });
   };
 
+  // Fonction pour naviguer vers l'écran "NewEvent"
   const handleClickGoToNewEvent = () => {
     navigation.navigate("NewEvent", {
       nom: poiInfos.nom,
@@ -165,32 +173,33 @@ export default function PoiScreen({ navigation, route }) {
     });
   };
 
+  // Fonction pour inverser l'affichage de la modale
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
+  // Fonction pour inverser l'affichage du formulaire de nouveau commentaire
   const taggleModal = () => {
     setShowNewComment(!showNewComment);
   };
 
-  //press btn valider de la modale "new comment"
+  // Fonction pour ajouter un nouveau commentaire
   function AddComment() {
     const nouveauCommentaire = {
-      pseudo: user.pseudo,
-      avatar: user.avatar,
-      date: date,
-      text: newComment,
+      pseudo: user.pseudo, // Pseudo de l'utilisateur
+      avatar: user.avatar, // Avatar de l'utilisateur
+      date: date, // Date du commentaire
+      text: newComment, // Texte du nouveau commentaire
     };
-    setNewComment("");
-    setComments([nouveauCommentaire, ...comments]);
-    taggleModal();
-    console.log(comments);
+    setNewComment(""); // Réinitialise le champ de nouveau commentaire
+    setComments([nouveauCommentaire, ...comments]); // Ajoute le nouveau commentaire à la liste des commentaires
+    taggleModal(); // Ferme le formulaire de nouveau commentaire
+    console.log(comments); // Affiche les commentaires dans la console pour le débogage
   }
 
   const formatedComments = comments.map((comment, i) => {
     return (
       <View style={styles.commentaireContainer} key={i}>
-       
         <View style={styles.commentTitle}>
           <Image style={styles.userAvatar} source={comment.avatar} />
           <View style={styles.commentTextContainer}>
@@ -317,7 +326,6 @@ export default function PoiScreen({ navigation, route }) {
 
           <View style={styles.ZoneCommentaire}>
             <Modal
-
               transparent={true}
               visible={showNewComment}
               onRequestClose={taggleModal}
