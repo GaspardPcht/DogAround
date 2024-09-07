@@ -58,6 +58,7 @@ export default function ProfilScreen({ navigation }) {
 
   // Permet de filtrer les données à mettre à jour en supprimant les valeurs undefined
   const filteredData = Object.fromEntries(
+    //.entries utilisée pour convertir l'objet dataToUpdate en un tableau de paires clé-valeur.
     Object.entries(dataToUpdate).filter(([key, value]) => value !== undefined)
   );
 

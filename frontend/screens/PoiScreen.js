@@ -80,7 +80,6 @@ export default function PoiScreen({ navigation, route }) {
   useEffect(() => {
     // Vérifie si le composant est focalisé
     if (isFocused) {
-      console.log("TEST"); // Affiche "TEST" dans la console pour le débogage
 
       // Vérifie si l'identifiant du POI est défini
       if (id) {
@@ -114,22 +113,8 @@ export default function PoiScreen({ navigation, route }) {
     navigation.navigate("TabNavigator", { screen: "Map" });
   };
 
-  // console.log(user.favorites)
   //press sur icône "heart" --> changement de couleur
   function hearthHandlePress() {
-    // const google_id = poiInfos.google_id
-    //ajout d'un Place_ID dans le tableau favorites du user
-    // 1 - vérification de l'existance du Place_ID dans la bdd
-    // fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/place/id/${google_id}`)
-    // .then((response) => response.json())
-    // .then((placeData) => {
-    //   const placeId = placeData._id
-    // })
-    // if(user.favorites)
-    // setIsFavorite(!isFavorite);
-    // const userFavorites = user.favorites
-    // const idToAdd = JSON.stringify(id)
-    // console.log(user.favorites.includes(id))
     if (!user.favorites.includes(id)) {
       console.log("true");
       dispatch(addFavorite(id));
@@ -140,11 +125,6 @@ export default function PoiScreen({ navigation, route }) {
       setIsFavorite(false);
     }
   }
-
-  //press sur icône "Like" --> changement de couleur + maj de likes dans le store
-  // function likePress() {
-  //   dispatch(updateLike({ pseudo: pseudo, id: id }));
-  // }
 
   const likePress = () => {
     if (!isLiked) {
@@ -210,11 +190,6 @@ export default function PoiScreen({ navigation, route }) {
             </View>
           </View>
         </View>
-        {/* <View style={styles.commentTextContainer}>
-          <Text style={styles.commentText}>
-            {comment.text}
-          </Text>
-        </View> */}
       </View>
     );
   });
