@@ -4,7 +4,7 @@ const User = require("../models/users");
 const Place = require("../models/places");
 const Discussion = require("../models/discussions");
 
-const uid2 = require("uid2"); // Bibliothèque pour générer des identifiants uniques
+const uid2 = require("uid2"); // Bibliothèque pour générer des identifiants uniques /tokens
 const bcrypt = require("bcrypt"); // Bibliothèque pour le hachage des mots de passe
 
 /* GET users listing. */
