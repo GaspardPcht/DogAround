@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Dimensions, Image } from "react-native";
+import { StyleSheet, View, Dimensions, Image,  } from "react-native";
 
 import FontAwesome from "react-native-vector-icons/FontAwesome6";
 
@@ -219,7 +219,7 @@ export default function MapScreen({ navigation }) {
           coordinate={e.location} // Coordonnées du marker
           onPress={() => handlePoiPress(e.google_id)} // Fonction appelée lors de la pression sur le marker
         >
-          <FontAwesome name={iconName} size={40} color={iconColor} />{" "}
+          <FontAwesome name={iconName} size={40} color={iconColor} />
           {/* Icône du marker */}
         </Marker>
       );
