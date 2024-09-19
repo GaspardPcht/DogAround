@@ -15,25 +15,16 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from "@react-navigation/native";
 import Btn from "../Components/Button";
-import Input from "../Components/Input";
-import TextContainer from "../Components/TextContainer";
-import Correspondance from "../assets/avatars/Correspondance";
 import { addFavorite, removeFavorite } from "../reducers/user";
-import { importPlaces, updateLike } from "../reducers/places";
 import moment from "moment";
 import "moment/locale/fr";
 
 export default function PoiScreen({ navigation, route }) {
   const dispatch = useDispatch();
   const [poiInfos, setPoiInfos] = useState({});
-
   const [isFavorite, setIsFavorite] = useState(false);
-
   const [isLiked, setIsLiked] = useState(false);
-  let aleat = Math.random();
-  aleat = Math.floor(aleat * 10);
-  const [likedCompt, setLikedCompt] = useState(aleat);
-
+  const [likedCompt, setLikedCompt] = useState(Math.floor(Math.random() * 10));
   const [showNewComment, setShowNewComment] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([
@@ -41,19 +32,19 @@ export default function PoiScreen({ navigation, route }) {
       pseudo: "Alain",
       avatar: require("../assets/avatars/chien_1.png"),
       date: "le 13 août à 15:32",
-      text: "Superbe endroit pour se reposer! ",
+      text: "Superbe endroit pour se reposer!",
     },
     {
       pseudo: "Jessi",
       avatar: require("../assets/avatars/chien_19.png"),
       date: "le 13 août à 12:15",
-      text: "J'ai adoré ce coin de promenade! ",
+      text: "J'ai adoré ce coin de promenade!",
     },
     {
       pseudo: "John",
       avatar: require("../assets/avatars/chien_21.png"),
       date: "le 12 août à 18:42",
-      text: "J'ai vu des très beaux photos de ce lieu! ",
+      text: "J'ai vu des très beaux photos de ce lieu!",
     },
     {
       pseudo: "Momo",
@@ -67,85 +58,60 @@ export default function PoiScreen({ navigation, route }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const horaires = poiInfos.horaires || [];
   const id = route.params.google_id;
-  let poiArr = [];
-  let poiObjet = {};
-  const now = new Date();
   const date = moment().locale("fr").format("lll");
 
   const user = useSelector((state) => state.user.value);
-  const places = useSelector((state) => state.places.value); //Recuperation des places dans le STORE
+  const places = useSelector((state) => state.places.value);
   const pseudo = user.pseudo;
 
-  // Utilise useEffect pour exécuter du code après le rendu du composant
   useEffect(() => {
-    // Vérifie si le composant est focalisé
-    if (isFocused) {
-
-      // Vérifie si l'identifiant du POI est défini
-      if (id) {
-        // Fetch du détail du POI en utilisant l'identifiant
-        fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/places/id/${id}`)
-          .then((response) => response.json()) // Convertit la réponse en JSON
-          .then((data) => {
-            // Vérifie si les données du POI sont présentes
-            if (data.place) {
-              // Crée un objet avec les détails du POI
-              const poiObjet = {
-                _id: data.place._id,
-                image: data.place.image,
-                nom: data.place.nom,
-                adresse: data.place.adresse,
-                horaires: data.place.horaires,
-                description: data.place.description,
-                categorie: data.place.categorie,
-                location: data.place.location,
-              };
-              // Met à jour l'état avec les informations du POI
-              setPoiInfos(poiObjet);
-            }
-          });
-      }
+    if (isFocused && id) {
+      fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/places/id/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.place) {
+            setPoiInfos({
+              _id: data.place._id,
+              image: data.place.image,
+              nom: data.place.nom,
+              adresse: data.place.adresse,
+              horaires: data.place.horaires,
+              description: data.place.description,
+              categorie: data.place.categorie,
+              location: data.place.location,
+            });
+          }
+        });
     }
-  }, [isFocused]); // Dépendance : le code s'exécute lorsque 'isFocused' change
+  }, [isFocused]);
 
-  // press sur croix pour retour à la map
   const handleClickCloseScreen = () => {
     navigation.navigate("TabNavigator", { screen: "Map" });
   };
 
-  //press sur icône "heart" --> changement de couleur
-  function hearthHandlePress() {
+  const hearthHandlePress = () => {
     if (!user.favorites.includes(id)) {
-      console.log("true");
       dispatch(addFavorite(id));
       setIsFavorite(true);
     } else {
-      console.log("false");
       dispatch(removeFavorite(id));
       setIsFavorite(false);
     }
-  }
+  };
 
   const likePress = () => {
-    if (!isLiked) {
-      setLikedCompt(likedCompt + 1);
-    } else {
-      setLikedCompt(likedCompt - 1);
-    }
+    setLikedCompt(isLiked ? likedCompt - 1 : likedCompt + 1);
     setIsLiked(!isLiked);
   };
 
-  // Fonction pour gérer le clic sur le bouton "nouveau commentaire"
   const handlePressNewComment = () => {
-    setShowNewComment(!showNewComment); // Inverse l'affichage du formulaire de nouveau commentaire
+    setShowNewComment(!showNewComment);
   };
 
-  // Fonction pour naviguer vers l'écran "Event"
   const handleClickGoToEvent = () => {
     navigation.navigate("Event", { nom: poiInfos.nom, image: poiInfos.image });
   };
 
-  // Fonction pour naviguer vers l'écran "NewEvent"
   const handleClickGoToNewEvent = () => {
     navigation.navigate("NewEvent", {
       nom: poiInfos.nom,
@@ -153,52 +119,46 @@ export default function PoiScreen({ navigation, route }) {
     });
   };
 
-  // Fonction pour inverser l'affichage de la modale
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  // Fonction pour inverser l'affichage du formulaire de nouveau commentaire
   const taggleModal = () => {
     setShowNewComment(!showNewComment);
   };
 
-  // Fonction pour ajouter un nouveau commentaire
-  function AddComment() {
+  const AddComment = () => {
     const nouveauCommentaire = {
-      pseudo: user.pseudo, // Pseudo de l'utilisateur
-      avatar: user.avatar, // Avatar de l'utilisateur
-      date: date, // Date du commentaire
-      text: newComment, // Texte du nouveau commentaire
+      pseudo: user.pseudo,
+      avatar: user.avatar,
+      date: date,
+      text: newComment,
     };
-    setNewComment(""); // Réinitialise le champ de nouveau commentaire
-    setComments([nouveauCommentaire, ...comments]); // Ajoute le nouveau commentaire à la liste des commentaires
-    taggleModal(); // Ferme le formulaire de nouveau commentaire
-    console.log(comments); // Affiche les commentaires dans la console pour le débogage
-  }
+    setNewComment("");
+    setComments([nouveauCommentaire, ...comments]);
+    taggleModal();
+  };
 
-  const formatedComments = comments.map((comment, i) => {
-    return (
-      <View style={styles.commentaireContainer} key={i}>
-        <View style={styles.commentTitle}>
-          <Image style={styles.userAvatar} source={comment.avatar} />
-          <View style={styles.commentTextContainer}>
-            <Text style={styles.commentPseudo}>{comment.pseudo}</Text>
-            <Text style={styles.commentTime}>{comment.date}</Text>
-            <View style={styles.inputContainer}>
-              <Text style={styles.commentText}>{comment.text}</Text>
-            </View>
+  const formatedComments = comments.map((comment, i) => (
+    <View style={styles.commentaireContainer} key={i}>
+      <View style={styles.commentTitle}>
+        <Image style={styles.userAvatar} source={comment.avatar} />
+        <View style={styles.commentTextContainer}>
+          <Text style={styles.commentPseudo}>{comment.pseudo}</Text>
+          <Text style={styles.commentTime}>{comment.date}</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.commentText}>{comment.text}</Text>
           </View>
         </View>
       </View>
-    );
-  });
+    </View>
+  ));
 
   const handleNewComment = () => {
     const CommentToAdd = {
       pseudo: user.pseudo,
       avatar: user.avatar,
-      date: now,
+      date: new Date(),
       text: newComment,
     };
     setNewComment(CommentToAdd);
@@ -215,12 +175,7 @@ export default function PoiScreen({ navigation, route }) {
           >
             <FontAwesome name="times" size={25} color="#FFF" />
           </TouchableOpacity>
-          <Image
-            source={{
-              uri: poiInfos.image,
-            }}
-            style={styles.headerImage}
-          />
+          <Image source={{ uri: poiInfos.image }} style={styles.headerImage} />
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{poiInfos.nom}</Text>
             <TouchableOpacity onPress={hearthHandlePress}>
@@ -232,31 +187,6 @@ export default function PoiScreen({ navigation, route }) {
                 ]}
               />
             </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.corpModale}>
-          <View style={styles.likeLine}>
-            <View style={styles.likeZone}>
-              <TouchableOpacity onPress={likePress}>
-                <FontAwesome
-                  name="thumbs-up"
-                  size={25}
-                  style={[
-                    styles.likedIcon,
-                    { color: isLiked ? "#0074e0" : "#000000" },
-                  ]}
-                />
-              </TouchableOpacity>
-              <Text style={styles.likeText}>{likedCompt}</Text>
-            </View>
-            <View>
-              <Btn
-                title="Evénement !"
-                style={styles.eventButton}
-                onPress={handleClickGoToEvent}
-              />
-            </View>
           </View>
         </View>
 
@@ -279,16 +209,11 @@ export default function PoiScreen({ navigation, route }) {
             <Text style={styles.infoText}>{poiInfos.description}</Text>
           </View>
 
-          {/* <Btn
-            title="Itineraire vers ce lieu"
-            style={styles.boutonItineraire}
-          ></Btn> */}
-
           <Btn
             title="Créer un événement"
             style={styles.boutonItineraire}
             onPress={handleClickGoToNewEvent}
-          ></Btn>
+          />
 
           <View style={styles.commentaireHeader}>
             <Text style={styles.KeyText}>Commentaires:</Text>
@@ -334,8 +259,6 @@ export default function PoiScreen({ navigation, route }) {
                     </TouchableOpacity>
                   </View>
                 </View>
-
-                <View style={styles.commentParent}></View>
               </View>
             </Modal>
             {formatedComments}
@@ -377,23 +300,17 @@ export default function PoiScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  likedIcon: {
-    zIndex: 10,
-  },
-
   container: {
     height: "100%",
     width: "100%",
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
-    backgroundColor: "#E8E9ED",
+    backgroundColor: "#FFF",
   },
-
   headerContainer: {
     position: "relative",
   },
-
   titleContainer: {
     top: 104,
     position: "absolute",
@@ -434,7 +351,6 @@ const styles = StyleSheet.create({
     fontSize: "12",
     paddingVertical: 1,
   },
-
   commentButton: {
     width: "90%",
     height: 30,
@@ -444,7 +360,6 @@ const styles = StyleSheet.create({
     fontSize: "12",
     paddingVertical: 1,
   },
-
   boutonItineraire: {
     width: "90%",
     height: 30,
@@ -454,7 +369,6 @@ const styles = StyleSheet.create({
     fontSize: "12",
     paddingVertical: 1,
   },
-
   eventButton: {
     fontSize: 8,
     paddingHorizontal: 10,
@@ -464,7 +378,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 15,
   },
-
   addEventBtn: {
     marginLeft: 1,
     paddingHorizontal: 5,
@@ -473,25 +386,22 @@ const styles = StyleSheet.create({
     width: 30,
     justifyContent: "center",
   },
-
   eventButtonText: {
     fontSize: 8,
     textAlign: "center",
   },
-
   detailContainer: {
+    paddingTop: 10,
     zIndex: 3,
     paddingHorizontal: 16,
     borderRadius: 10,
     margin: 1,
   },
-
   plusIcon: {
     fontSize: 25,
-    color: "#BB7E5D",
+    color: "#000",
     marginRight: 8,
   },
-
   detail: {
     textAlign: "justify",
     flexWrap: "nowrap",
@@ -500,30 +410,26 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 15,
   },
-
   KeyText: {
     flexWrap: "nowrap",
     fontSize: 16,
     fontWeight: "bold",
-    color: "#416165",
+    color: "#000",
     paddingLeft: 10,
     marginRight: 16,
   },
-
   infoText: {
     fontSize: 14,
     marginBottom: 1,
     color: "#666",
     paddingLeft: 10,
   },
-
   DescriptionContainer: {
     alignContent: "flex-start",
     marginBottom: 15,
     paddingLeft: 10,
     marginRight: 16,
   },
-
   descriptionText: {
     textAlign: "justify",
     flexWrap: "nowrap",
@@ -532,65 +438,48 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 15,
   },
-
   btnContainer: {
     alignItems: "center",
   },
-
   modalBtn: {
     alignItems: "center",
     paddingVertical: 2,
     height: 50,
   },
-
   commentaireContainer: {
     margin: 10,
   },
-
   commentaireHeader: {
     marginTop: 25,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
-
   ZoneCommentaire: {
     padding: 10,
     borderRadius: 8,
-    backgroundColor: "#FFF",
+    backgroundColor: "#E8E9ED",
     marginBottom: 30,
   },
-
   userAvatar: {
     height: 40,
     width: 40,
   },
-
   commentTitle: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    // paddingHorizontal: 16,
   },
-
-  // commentTextContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "baseline",
-  // },
-
   commentPseudo: {
     fontSize: 14,
     fontWeight: "bold",
     color: "##795C5F",
-    // paddingLeft: 10,
     paddingRight: 10,
   },
-
   commentText: {
     width: 250,
     flexWrap: "wrap",
@@ -598,13 +487,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     paddingRight: 10,
-    marginTop:2,
+    marginTop: 2,
   },
-
   commentTextContainer: {
-    // flexWrap: "nowrap",
     alignItems: "flex-start",
-    // marginLeft: 30,
     marginBottom: 10,
     paddingHorizontal: 5,
   },
@@ -646,7 +532,7 @@ const styles = StyleSheet.create({
   horaires: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#416165",
+    color: "#000",
     marginRight: 10,
   },
   horaireItem: {

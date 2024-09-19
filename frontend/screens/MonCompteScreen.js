@@ -131,7 +131,7 @@ export default function MonCompteScreen({ navigation }) {
             style={styles.plusButton}
             onPress={() => handleClickGoToCompagnon("")}
           >
-            <FontAwesome name="plus" size={25} color="#416165" />
+            <FontAwesome name="plus" size={25} color="#000" />
           </TouchableOpacity>
         </View>
         <View style={styles.inputCompagnon}>{companions}</View>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#E8E9ED",
+    backgroundColor: "#FFF",
     paddingTop: 40,
   },
   scrollContainer: {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   text: {
-    color: "#416165",
+    color: "#000",
     fontSize: 24,
     fontWeight: "bold",
     fontFamily: "Commissioner_700Bold",
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderRadius: 8,
-    backgroundColor: "#BB7E5D",
+    backgroundColor: "#E8E9ED",
     width: "83%",
     gap: 10,
     alignItems: "center",
@@ -241,9 +241,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   editButton: {
-    backgroundColor: "#FFF",
-    paddingVertical: 14,
-    paddingHorizontal: 14,
+    backgroundColor: "#E8E9ED",
+    paddingVertical: 12,
+    paddingHorizontal: 19,
     borderRadius: 8,
   },
   editText: {

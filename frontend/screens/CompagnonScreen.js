@@ -214,7 +214,7 @@ export default function CompagnonScreen({ navigation, route }) {
               style={styles.plusIcon}
               onPress={handleClickOpenModal}
             >
-              <FontAwesome name="plus" size={21} color="#BB7E5D" />
+              <FontAwesome name="plus" size={21} color="#000" />
             </TouchableOpacity>
           </View>
           <View style={styles.inputContainer}>
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     width: "100%",
-    backgroundColor: "#BB7E5D",
+    backgroundColor: "#E8E9ED",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get("window").width,
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 20,
@@ -302,19 +302,19 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 20,
-    color: '#416165',
+    color: "#416165",
     padding: 10,
     margin: 20,
   },
   titleInput: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 20,
-    color: '#416165',
+    color: "#416165",
     padding: 10,
     backgroundColor: "#ffffff",
     borderRadius: 8,
     margin: 20,
-    minWidth: Dimensions.get('window').width * 0.5,
+    minWidth: Dimensions.get("window").width * 0.5,
   },
   avatarWrapper: {
     width: 80,
@@ -347,14 +347,14 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   input: {
-    width: Dimensions.get('window').width * 0.6,
+    width: Dimensions.get("window").width * 0.6,
     padding: 10,
     backgroundColor: "#ffffff",
     borderRadius: 8,
     margin: 10,
   },
   inputContainer: {
-    width: Dimensions.get('window').width * 0.8,
+    width: Dimensions.get("window").width * 0.8,
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -365,18 +365,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 8,
     margin: 20,
-    width: Dimensions.get('window').width * 0.8,
+    width: Dimensions.get("window").width * 0.8,
   },
   button: {
     marginTop: 20,
   },
   dropdown: {
-    width: Dimensions.get('window').width * 0.6,
+    width: Dimensions.get("window").width * 0.6,
     padding: 10,
     backgroundColor: "#ffffff",
     borderRadius: 8,
     margin: 10,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
@@ -392,5 +392,4 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
-
 });
