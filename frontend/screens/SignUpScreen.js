@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  Dimensions
+  Dimensions, 
+  Image,
 } from "react-native"; 
 import {
   useFonts,
@@ -169,14 +170,10 @@ export default function SignUpScreen({ navigation }) {
           <Text style={styles.newUserText}>
             Nouveau sur <Text style={styles.text}>DOG AROUND</Text>?
           </Text>
-
-          <View style={styles.socialContainer}>
-            <Text style={styles.textConnection}>Connectez-vous via: </Text>
-            <View style={styles.buttonContainer}>
-              <ButtonGoogle />
-              <ButtonFacebook />
-            </View>
-          </View>
+          <Image
+            source={require("../assets/logo/logo2.png")}
+            style={styles.logo}
+          />
 
           {errorMessage ? (
             <Text style={styles.errorText}>{errorMessage}</Text>
@@ -270,17 +267,16 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   text: {
     fontFamily: "Commissioner_700Bold",
-    color: "#BB7E5D",
   },
   newUserText: {
     fontFamily: "Commissioner_700Bold",
-    color: "#416165",
+    color: "#000",
     fontSize: 20,
     textAlign: "center",
     marginTop: 20,
@@ -325,16 +321,20 @@ const styles = StyleSheet.create({
   },
 
   dropdownContainer: {
-    width: '80%',
+    width: "80%",
   },
 
   inputdropdownContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
 
   suggestionListContainer: {
     borderRadius: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    width: '100%',
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    width: "100%",
+  },
+  logo: {
+    width: 200,
+    height: 200,
   },
 });

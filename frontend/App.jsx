@@ -38,27 +38,32 @@ const store = configureStore({
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Configuration de la navigation par onglets
+const ICON_SIZE = 30; // Définissez la taille souhaitée ici
+
 const TabNavigator = () => {
   const user = useSelector((state) => state.user.value); // Récupération des paramètres de l'utilisateur stockés dans le store
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
+        tabBarIcon: ({ color }) => {
           let iconName = "";
 
           if (route.name === "Map") {
             iconName = "map";
-            return <FontAwesome name={iconName} size={size} color={color} />;
+            return (
+              <FontAwesome name={iconName} size={ICON_SIZE} color={color} />
+            );
           } else if (route.name === "Compte") {
-            iconName = "user";
-            return <FontAwesome name={iconName} size={size} color={color} />;
+            iconName = "user-circle";
+            return (
+              <FontAwesome name={iconName} size={ICON_SIZE} color={color} />
+            );
           } else if (route.name === "Chat") {
-            iconName = "comment";
+            iconName = "envelope";
             return (
               <View style={{ flexDirection: "row" }}>
-                <FontAwesome name={iconName} size={size} color={color} />
+                <FontAwesome name={iconName} size={ICON_SIZE} color={color} />
                 {user.pastilleMessage && (
                   <View
                     style={{
@@ -117,6 +122,7 @@ const TabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
 export default function App() {
   return (
     <AutocompleteDropdownContextProvider>
