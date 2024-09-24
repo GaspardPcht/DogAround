@@ -468,6 +468,7 @@ const styles = StyleSheet.create({
   userAvatar: {
     height: 40,
     width: 40,
+    marginRight: 10,
   },
   commentTitle: {
     flexDirection: "row",
@@ -571,5 +572,79 @@ const styles = StyleSheet.create({
     top: 1,
     right: 10,
     zIndex: 2,
+  },
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+  },
+  commentInput: {
+    width: "100%",
+    height: 100,
+    padding: 10,
+    backgroundColor: "#E8E9ED",
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  avatarContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  commentTime: {
+    fontSize: 12,
+    color: "#666",
+  },
+  commentaireContainer: {
+    margin: 10,
+  },
+  userAvatar: {
+    height: 40,
+    width: 40,
+    marginRight: 10,
+  },
+  commentTitle: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  commentTextContainer: {
+    alignItems: "flex-start",
+    marginBottom: 10,
+    paddingHorizontal: 5,
+  },
+  commentPseudo: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#795C5F",
+    paddingRight: 10,
+  },
+  commentText: {
+    width: 250,
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    fontSize: 16,
+    color: "#333",
+    paddingRight: 10,
+    marginTop: 2,
+  },
+  modalBtn: {
+    alignItems: "center",
+    paddingVertical: 2,
+    height: 50,
+  },
+  btnContainer: {
+    alignItems: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    
   },
 });

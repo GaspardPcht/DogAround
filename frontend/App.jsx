@@ -49,7 +49,7 @@ const TabNavigator = () => {
           let iconName = "";
 
           if (route.name === "Map") {
-            iconName = "home";
+            iconName = "map";
             return <FontAwesome name={iconName} size={size} color={color} />;
           } else if (route.name === "Compte") {
             iconName = "user";
@@ -73,15 +73,27 @@ const TabNavigator = () => {
             );
           }
         },
-        tabBarActiveTintColor: "#7DBA84",
+        tabBarActiveTintColor: "#395756",
         tabBarInactiveTintColor: "#000000",
         tabBarStyle: { backgroundColor: "#FFF" },
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Chat" component={ChatScreen} />
-      <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="Compte" component={MonCompteScreen} />
+      <Tab.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{ tabBarLabel: () => null }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapScreen}
+        options={{ tabBarLabel: () => null }}
+      />
+      <Tab.Screen
+        name="Compte"
+        component={MonCompteScreen}
+        options={{ tabBarLabel: () => null }}
+      />
       <Tab.Screen
         name="Profil"
         component={ProfileScreen}
@@ -105,7 +117,6 @@ const TabNavigator = () => {
     </Tab.Navigator>
   );
 };
-
 export default function App() {
   return (
     <AutocompleteDropdownContextProvider>

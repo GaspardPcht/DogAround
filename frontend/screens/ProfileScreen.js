@@ -172,8 +172,8 @@ export default function ProfilScreen({ navigation }) {
           />
           <View style={styles.switchContainer}>
             <Switch
-              trackColor={{ false: "#BB7E5D", true: "#7DBA84" }}
-              thumbColor={isEnabled ? "#BB7E5D" : "#7DBA84"}
+              trackColor={{ false: "#BB7E5D", true: "#C9C9C9" }}
+              thumbColor={isEnabled ? "#395756" : "#395756"}
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
               value={isEnabled}

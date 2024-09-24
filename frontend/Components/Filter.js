@@ -100,112 +100,181 @@ export default function Filter({ userInfo, validFilters }) {
         /> */}
         <AutocompleteDropdown
           emptyResultText="Aucun résultat"
-          initialValue={{ id: '1' }}
+          initialValue={{ id: "1" }}
           debounce={500}
           onChangeText={(value) => getSuggestions(value)}
           onSelectItem={(item) => item && setCity(item.title)}
           dataSet={suggestionsList}
           textInputProps={{
-            placeholder: 'Ville',
+            placeholder: "Ville",
             style: {
-              width: Dimensions.get('window').width * 0.5,
+              width: Dimensions.get("window").width * 0.5,
             },
           }}
-          direction={Platform.select({ ios: 'down' })}
+          direction={Platform.select({ ios: "down" })}
           inputContainerStyle={styles.inputContainer}
           containerStyle={styles.dropdownContainer}
           suggestionsListContainerStyle={styles.suggestionListContainer}
-          suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+          suggestionsListMaxHeight={Dimensions.get("window").height * 0.4}
           /* editable={optionCity} */
           clearOnFocus={false}
           closeOnSubmit={true}
           onClear={() => onClearPress()}
         />
-        <TouchableOpacity style={styles.button} onPress={() => setOptionCity(!optionCity)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setOptionCity(!optionCity)}
+        >
           {!optionCity && <Text style={styles.buttontext}>Ma Position</Text>}
           {optionCity && <Text style={styles.buttontext}>Ville</Text>}
         </TouchableOpacity>
       </View>
       <View style={styles.containerfilters}>
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'parc')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('parc')}
-          />
-          <Text style={styles.text}>Parcs et forêts</Text>
-
+          <TouchableOpacity
+            onPress={() => selectFilter("parc")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "parc") ? "#D9D9D9" : "#000",
+              }}
+            />
+            <Text style={styles.text}>Parcs et forêts</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'air')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('air')}
-          />
-          <Text style={styles.text}>Air canine</Text>
-
+          <TouchableOpacity
+            onPress={() => selectFilter("air")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "air") ? "#D9D9D9" : "#000",
+              }}
+            />
+            <Text style={styles.text}>Air canine</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'veterinaire')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('veterinaire')}
-          />
-          <Text style={styles.text}>Veterinaire</Text>
-
+          <TouchableOpacity
+            onPress={() => selectFilter("veterinaire")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "veterinaire")
+                  ? "#D9D9D9"
+                  : "#000",
+              }}
+            />
+            <Text style={styles.text}>Veterinaire</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'animalerie')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('animalerie')}
-          />
-          <Text style={styles.text}>Animalerie</Text>
-
+          <TouchableOpacity
+            onPress={() => selectFilter("animalerie")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "animalerie")
+                  ? "#D9D9D9"
+                  : "#000",
+              }}
+            />
+            <Text style={styles.text}>Animalerie</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'eau')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('eau')}
-          />
-          <Text style={styles.text}>Point d'eau</Text>
+          <TouchableOpacity
+            onPress={() => selectFilter("eau")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "eau") ? "#D9D9D9" : "#000",
+              }}
+            />
+            <Text style={styles.text}>Point d'eau</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'restaurant')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('restaurant')}
-          />
-          <Text style={styles.text}>Bar/Restaurant</Text>
+          <TouchableOpacity
+            onPress={() => selectFilter("restaurant")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "restaurant")
+                  ? "#D9D9D9"
+                  : "#000",
+              }}
+            />
+            <Text style={styles.text}>Bar/Restaurant</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'favori')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('favori')}
-          />
-          <Text style={styles.text}>Favoris</Text>
+          <TouchableOpacity
+            onPress={() => selectFilter("favori")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "favori") ? "#D9D9D9" : "#000",
+              }}
+            />
+            <Text style={styles.text}>Favoris</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <FontAwesome name='paw'
-            size={40}
-            style={{ marginRight: 15, color: (filters.some(e => e === 'autre')) ? '#D9D9D9' : '#000' }}
-            onPress={() => selectFilter('autre')}
-          />
-          <Text style={styles.text}>Autres</Text>
+          <TouchableOpacity
+            onPress={() => selectFilter("autre")}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="map-pin"
+              size={30}
+              style={{
+                marginRight: 15,
+                color: filters.some((e) => e === "autre") ? "#D9D9D9" : "#000",
+              }}
+            />
+            <Text style={styles.text}>Autres</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <Btn title="Confirmer" onPress={() => confirmation()} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -225,6 +294,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'flex-start',
     width: '100%',
+    marginTop: 10,
   },
 
   selection: {

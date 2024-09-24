@@ -200,14 +200,14 @@ export default function MapScreen({ navigation }) {
       iconName = "paw";
       iconColor = "#795C5F";
     } else if (e.type === "restaurant") {
-      iconName = "location-dot";
-      iconColor = "#FF0000";
+      iconName = "map-pin";
+      iconColor = "#F00000";
     } else if (e.type === "like") {
-      iconName = "location-dot";
-      iconColor = "#FF0000";
+      iconName = "map-pin";
+      iconColor = "#F00000";
     } else {
-      iconName = "location-dot";
-      iconColor = "#FF0000";
+      iconName = "map-pin";
+      iconColor = "#F00000";
     }
 
     // Vérifie si le marker doit être affiché en fonction des filtres de l'utilisateur
@@ -219,7 +219,7 @@ export default function MapScreen({ navigation }) {
           coordinate={e.location} // Coordonnées du marker
           onPress={() => handlePoiPress(e.google_id)} // Fonction appelée lors de la pression sur le marker
         >
-          <FontAwesome name={iconName} size={40} color={iconColor} />
+          <FontAwesome name={iconName} size={30} color={iconColor} />
           {/* Icône du marker */}
         </Marker>
       );

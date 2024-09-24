@@ -7,6 +7,7 @@ import {
   Text,
   KeyboardAvoidingView,
   ScrollView,
+  Image,
 } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import Btn from "../Components/Button";
@@ -61,49 +62,49 @@ export default function SignInScreen({ navigation }) {
     return null; // Ne rend rien tant que les ressources ne sont pas prêtes
   }
 
-const handleConnection = () => {
-  // Envoie une requête POST à l'API pour se connecter
-  fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/signin`, {
-    method: "POST", // Méthode HTTP utilisée pour la requête
-    headers: { "Content-Type": "application/json" }, // En-têtes de la requête
-    body: JSON.stringify({
-      // Corps de la requête, converti en JSON
-      email: email,
-      password: password,
-    }),
-  })
-    .then((response) => response.json()) // Convertit la réponse en JSON
-    .then((data) => {
-      // Vérifie si la connexion a réussi
-      if (data.result) {
-        // Si la connexion a réussi, met à jour l'état de l'application avec les informations de l'utilisateur
-        dispatch(
-          login({
-            email: email,
-            pseudo: data.pseudo,
-            city: data.city,
-            avatar: data.avatar,
-            token: data.token,
-            favorites: data.favorites,
-          })
-        );
-        // Réinitialise les champs du formulaire
-        setEmail("");
-        setPassword("");
-        setErrorMessage("");
-        // Navigue vers l'écran "Map" de l'application
-        navigation.navigate("TabNavigator", { screen: "Map" });
-      } else {
-        // Si la connexion a échoué, affiche un message d'erreur
-        setErrorMessage("Email ou Mot de passe incorrect"); // Affiche un message d'erreur si le mot de passe ou l'email est incorrect ou manquant
-      }
-    });
-};
+  const handleConnection = () => {
+    // Envoie une requête POST à l'API pour se connecter
+    fetch(`${process.env.EXPO_PUBLIC_BACKEND_ADDRESS}/users/signin`, {
+      method: "POST", // Méthode HTTP utilisée pour la requête
+      headers: { "Content-Type": "application/json" }, // En-têtes de la requête
+      body: JSON.stringify({
+        // Corps de la requête, converti en JSON
+        email: email,
+        password: password,
+      }),
+    })
+      .then((response) => response.json()) // Convertit la réponse en JSON
+      .then((data) => {
+        // Vérifie si la connexion a réussi
+        if (data.result) {
+          // Si la connexion a réussi, met à jour l'état de l'application avec les informations de l'utilisateur
+          dispatch(
+            login({
+              email: email,
+              pseudo: data.pseudo,
+              city: data.city,
+              avatar: data.avatar,
+              token: data.token,
+              favorites: data.favorites,
+            })
+          );
+          // Réinitialise les champs du formulaire
+          setEmail("");
+          setPassword("");
+          setErrorMessage("");
+          // Navigue vers l'écran "Map" de l'application
+          navigation.navigate("TabNavigator", { screen: "Map" });
+        } else {
+          // Si la connexion a échoué, affiche un message d'erreur
+          setErrorMessage("Email ou Mot de passe incorrect"); // Affiche un message d'erreur si le mot de passe ou l'email est incorrect ou manquant
+        }
+      });
+  };
 
-const handleClick = () => {
-  // Navigue vers l'écran d'inscription
-  navigation.navigate("SignUp");
-};
+  const handleClick = () => {
+    // Navigue vers l'écran d'inscription
+    navigation.navigate("SignUp");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -116,10 +117,10 @@ const handleClick = () => {
           <Text style={styles.welcomeText}>
             Bienvenue sur <Text style={styles.text}>DOG AROUND</Text>
           </Text>
-          <View style={styles.buttonContainer}>
-            <ButtonGoogle />
-            <ButtonFacebook />
-          </View>
+          <Image
+            source={require("../assets/logo/logo2.png")}
+            style={styles.logo}
+          />
 
           <View style={styles.inputContainer}>
             {errorMessage ? (
@@ -163,30 +164,31 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     backgroundColor: "#E8E9ED",
-    padding: 20,
+    padding: 10,
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
   },
   welcomeText: {
     fontFamily: "Commissioner_700Bold",
-    color: "#416165",
+    color: "#000",
     fontSize: 20,
     textAlign: "center",
   },
   text: {
-    color: "#BB7E5D",
+    color: "#000",
   },
   buttonContainer: {
     width: "80%",
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   connection: {
     marginTop: 20,
+    marginBottom: 130,
   },
   inputContainer: {
     width: "100%",
@@ -199,8 +201,13 @@ const styles = StyleSheet.create({
   },
   newUserText: {
     fontFamily: "Commissioner_700Bold",
-    color: "#416165",
+    color: "#000",
     fontSize: 20,
     textAlign: "center",
+    marginBottom: 30,
+  },
+  logo: {
+    width: 200,
+    height: 200,
   },
 });
