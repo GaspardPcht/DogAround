@@ -33,8 +33,8 @@ import { login } from "../reducers/user";
 SplashScreen.preventAutoHideAsync();
 
 export default function SignInScreen({ navigation }) {
-  const [email, setEmail] = useState("H@h.com");
-  const [password, setPassword] = useState("h");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
 

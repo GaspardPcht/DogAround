@@ -13,7 +13,7 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/916d05be-e602-4b55-9c39-cc0d0227c869"
+      "url": "https://u.expo.dev/47fbcdfe-2ba4-46d5-afa7-f7840c4f9631"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -37,9 +37,10 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "916d05be-e602-4b55-9c39-cc0d0227c869"
+        "projectId": "47fbcdfe-2ba4-46d5-afa7-f7840c4f9631"
       }
     },
-    "runtimeVersion": "1.0.0"
+    "runtimeVersion": "1.0.0",
+    "owner": "gaspardpcht"
   }
 }
